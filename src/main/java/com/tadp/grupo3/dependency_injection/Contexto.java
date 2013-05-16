@@ -15,9 +15,14 @@ public class Contexto {
 		// TODO Auto-generated method stub
 	}
 
-	public Object obtenerInstancia(Class<?> class1) {
+	public Object obtenerInstancia(Class<?> baseType) {
 			// TODO Auto-generated method stub
 			return null;
+	}
+
+	public void agregarBindingPrimitivo(Class<?> baseType, String string) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
