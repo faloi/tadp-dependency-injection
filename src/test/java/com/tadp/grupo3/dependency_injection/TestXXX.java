@@ -53,14 +53,14 @@ public class TestXXX {
 	public void test2() {
 		this.contexto.obtenerInstancia(PersonaHome.class);
 	}
-//	
-//	@Test
-//	public void test3() {
-//		contexto.agregarBindingPrimitivo(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
-//		SqlPeliculasHome sqlHome = (SqlPeliculasHome) contexto.obtenerInstancia(PeliculasHome.class);
-//		
-//		assertEquals("...cadena de conexion a SQL...", sqlHome.getCadenaDeConexion());
-//	}
+	
+	@Test
+	public void test3() {
+		contexto.agregarBindingPrimitivo(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
+		Object actual = contexto.obtenerObjetoPrimitivoPara(SqlPeliculasHome.class, String.class);
+		
+		assertEquals("...cadena de conexion a SQL...", actual); 
+	}
 //	
 //	@Test(expected=MasDeUnBindingException.class)
 //	public void test4() {
@@ -69,6 +69,8 @@ public class TestXXX {
 //		
 //		this.contexto.obtenerInstancia(PeliculasHome.class);
 //	}
+//	
+//	
 //	
 //	@Test
 //	public void test5() {

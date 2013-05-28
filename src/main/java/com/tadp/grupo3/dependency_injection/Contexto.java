@@ -19,8 +19,14 @@ public class Contexto {
 		return bindings;
 	}
 	
+	private Collection<BindingPrimitivo> bindingsPrimitivos;
+	private Collection<BindingPrimitivo> getBindingsPrimitivos() {
+		return bindingsPrimitivos;
+	}
+	
 	public Contexto() {
 		this.bindings = new ArrayList<Binding<Class<?>>>();
+		this.bindingsPrimitivos = new ArrayList<BindingPrimitivo>();
 	}
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
@@ -60,12 +66,21 @@ public class Contexto {
 		return null;
 	}
 
-	public void agregarBindingPrimitivo(Class<?> baseType, String string) {
-		// TODO Auto-generated method stub
+	public void agregarBindingPrimitivo(Class<?> scope, Object objetoPrimitivo) {
+		this.getBindingsPrimitivos().add(new BindingPrimitivo(scope, objetoPrimitivo));
 	}
-
+	
 	private void agregarBinding(Binding binding) {
 		this.getBindings().add(binding);
+	}
+
+	public <TipoPrimitivo> TipoPrimitivo obtenerObjetoPrimitivoPara(Class<?> scope, Class<TipoPrimitivo> tipoPrimitivo) {
+		for (BindingPrimitivo binding : this.getBindingsPrimitivos()) {
+			if (binding.getScope().equals(scope))
+				return (TipoPrimitivo) binding.getObjetoPrimitivo();
+		}
+		
+		throw new NoExisteBindingException();		
 	}
 
 }
