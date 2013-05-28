@@ -1,34 +1,43 @@
 package com.tadp.grupo3.dependency_injection;
 
 import java.lang.reflect.Constructor;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import net.sf.staccatocommons.collections.stream.Streams;
+import static net.sf.staccatocommons.lambda.Lambda.$;
+import static net.sf.staccatocommons.lambda.Lambda.lambda;
+import net.sf.staccatocommons.collections.stream.Stream;
 
 public class Contexto {
+
+	// Properties
+	private Collection<Binding<Class<?>>> bindings;
+	private Collection<Binding<Class<?>>> getBindings() {
+		return bindings;
+	}
 	
-	private Map<Class<?>, Object> bindings = new HashMap<Class<?>, Object>();
-
-	private static Contexto instance;
-
-	public static Contexto getInstance() {
-		if (instance == null)
-			instance = new Contexto();
-		
-		return instance;
+	public Contexto() {
+		this.bindings = new ArrayList<Binding<Class<?>>>();
+	}
+	
+	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
+		this.agregarBinding(new Binding<TipoBase>(tipoBase, tipoConcreto));
 	}
 
-	public void agregarBinding(Class<?> baseType, Class<?> concreteType) {
-		Object instancia = this.instanciarObjeto(concreteType);
-		
-		//Validar si ya lo tiene
-		this.bindings.put(baseType, concreteType);
-	}
-
-	public Object obtenerInstancia(Class<?> baseType) {
-		//Validar si no lo tiene
-		//this.bindings.get(baseType);
-
-		return null;
+	public <T> T obtenerInstancia(Class<T> tipoBase) {
+		try {
+			for (Binding<?> binding : this.getBindings()) {
+				if (binding.getTipoBase().equals(tipoBase))
+					return (T) binding.getTipoConcreto().newInstance();
+			}
+			
+			return null;
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public Object instanciarObjeto(Class<?> clazz) {
@@ -51,6 +60,10 @@ public class Contexto {
 
 	public void agregarBindingPrimitivo(Class<?> baseType, String string) {
 		// TODO Auto-generated method stub
+	}
+
+	private void agregarBinding(Binding binding) {
+		this.getBindings().add(binding);
 	}
 
 }
