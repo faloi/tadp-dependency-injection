@@ -49,10 +49,10 @@ public class TestXXX {
 		assertThat(perro, instanceOf(Bulldog.class));
 	}
 	
-//	@Test(expected=NoExisteBindingException.class)
-//	public void test2() {
-//		this.contexto.obtenerInstancia(PersonaHome.class);
-//	}
+	@Test(expected=NoExisteBindingException.class)
+	public void test2() {
+		this.contexto.obtenerInstancia(PersonaHome.class);
+	}
 //	
 //	@Test
 //	public void test3() {

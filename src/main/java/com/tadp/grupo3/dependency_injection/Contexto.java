@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+
 import net.sf.staccatocommons.collections.stream.Streams;
 import static net.sf.staccatocommons.lambda.Lambda.$;
 import static net.sf.staccatocommons.lambda.Lambda.lambda;
@@ -32,7 +34,7 @@ public class Contexto {
 					return (T) binding.getTipoConcreto().newInstance();
 			}
 			
-			return null;
+			throw new NoExisteBindingException();
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
