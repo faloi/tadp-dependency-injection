@@ -3,8 +3,12 @@ package com.tadp.grupo3.dependency_injection;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import static ch.lambdaj.Lambda.*;
+import static org.hamcrest.Matchers.*;
 
 public class Contexto {
 
@@ -30,12 +34,15 @@ public class Contexto {
 
 	public <T> T obtenerInstancia(Class<T> tipoBase) {
 		try {
-			for (Binding binding : this.getBindings()) {
-				if (binding.getTipoBase().equals(tipoBase))
-					return (T) binding.getTipoConcreto().newInstance();
-			}
+			List<Binding> bindings = filter(having(on(Binding.class).esTipoBase(tipoBase)), this.getBindings());
 			
-			throw new NoExisteBindingException();
+			if (bindings.isEmpty())
+				throw new NoExisteBindingException();
+			
+			if (bindings.size() > 1)
+				throw new MasDeUnBindingException();
+			
+			return (T) bindings.get(0).getTipoConcreto().newInstance();
 		} catch (InstantiationException e) {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
@@ -70,12 +77,15 @@ public class Contexto {
 	}
 
 	public <TipoPrimitivo> TipoPrimitivo obtenerObjetoPrimitivoPara(Class<?> scope, Class<TipoPrimitivo> tipoPrimitivo) {
-		for (BindingPrimitivo binding : this.getBindingsPrimitivos()) {
-			if (binding.getScope().equals(scope))
-				return (TipoPrimitivo) binding.getObjetoPrimitivo();
-		}
+		List<BindingPrimitivo> bindings = filter(having(on(BindingPrimitivo.class).esScope(scope)), this.getBindingsPrimitivos());
 		
-		throw new NoExisteBindingException();		
+		if (bindings.isEmpty())
+			throw new NoExisteBindingException();
+		
+		if (bindings.size() > 1)
+			throw new MasDeUnBindingException();
+		
+		return (TipoPrimitivo) bindings.get(0).getObjetoPrimitivo();
 	}
 
 }

@@ -26,4 +26,8 @@ public class BindingPrimitivo {
 		this.scope = scope;
 	}
 
+	public Boolean esScope(Class<?> otroScope) {
+		return this.getScope().equals(otroScope);
+	}
+
 }

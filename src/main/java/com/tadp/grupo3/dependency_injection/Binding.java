@@ -10,6 +10,10 @@ public class Binding {
 		this.setTipoConcreto(tipoConcreto);
 	}
 
+	public boolean esTipoBase(Class<?> otroTipo) {
+		return this.getTipoBase().equals(otroTipo);
+	}
+	
 	public Class<?> getTipoBase() {
 		return tipoBase;
 	}
