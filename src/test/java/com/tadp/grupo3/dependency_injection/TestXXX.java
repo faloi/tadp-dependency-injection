@@ -46,6 +46,14 @@ public class TestXXX {
 		this.contexto.obtenerInstancia(PersonaHome.class);
 	}
 	
+	@Test(expected=MasDeUnBindingException.class)
+	public void obtenerInstancia_explota_si_hay_mas_de_un_binding_para_el_tipo_solicitado() {
+		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
+		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		
+		this.contexto.obtenerInstancia(PeliculasHome.class);
+	}
+	
 	@Test
 	public void obtenerObjetoPrimitivoPara_retorna_el_objeto_configurado_para_el_scope_dado() {
 		contexto.agregarBindingPrimitivo(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
@@ -57,14 +65,6 @@ public class TestXXX {
 		assertEquals("...cadena de conexion a SQL...", cadenaConexion);
 		assertEquals("0x88AB82", offset);
 	}
-//	
-//	@Test(expected=MasDeUnBindingException.class)
-//	public void test4() {
-//		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
-//		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
-//		
-//		this.contexto.obtenerInstancia(PeliculasHome.class);
-//	}
 //	
 //	@Test
 //	public void test5() {
