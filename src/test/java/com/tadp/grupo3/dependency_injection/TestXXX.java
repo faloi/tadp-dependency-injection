@@ -22,7 +22,7 @@ public class TestXXX {
 	}
 	
 	@Test
-	public void test1() {
+	public void obtenerInstancia_crea_un_objeto_del_tipo_especificado_en_el_binding() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
 		PeliculasHome home = contexto.obtenerInstancia(PeliculasHome.class);
 		
@@ -30,15 +30,7 @@ public class TestXXX {
 	}
 
 	@Test
-	public void test1b() {
-		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
-		PeliculasHome home = contexto.obtenerInstancia(PeliculasHome.class);
-		
-		assertThat(home, instanceOf(SqlPeliculasHome.class));
-	}
-	
-	@Test
-	public void test1c() {
+	public void obtenerInstancia_crea_objetos_de_los_tipos_especificados_en_los_bindings() {
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		this.contexto.agregarBinding(Perro.class, Bulldog.class);
 
@@ -50,16 +42,20 @@ public class TestXXX {
 	}
 	
 	@Test(expected=NoExisteBindingException.class)
-	public void test2() {
+	public void obtenerInstancia_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
 		this.contexto.obtenerInstancia(PersonaHome.class);
 	}
 	
 	@Test
-	public void test3() {
+	public void obtenerObjetoPrimitivoPara_retorna_el_objeto_configurado_para_el_scope_dado() {
 		contexto.agregarBindingPrimitivo(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
-		Object actual = contexto.obtenerObjetoPrimitivoPara(SqlPeliculasHome.class, String.class);
+		contexto.agregarBindingPrimitivo(EnMemoriaPeliculasHome.class, "0x88AB82");
 		
-		assertEquals("...cadena de conexion a SQL...", actual); 
+		String cadenaConexion = contexto.obtenerObjetoPrimitivoPara(SqlPeliculasHome.class, String.class);
+		String offset = contexto.obtenerObjetoPrimitivoPara(EnMemoriaPeliculasHome.class, String.class);
+		
+		assertEquals("...cadena de conexion a SQL...", cadenaConexion);
+		assertEquals("0x88AB82", offset);
 	}
 //	
 //	@Test(expected=MasDeUnBindingException.class)
@@ -69,8 +65,6 @@ public class TestXXX {
 //		
 //		this.contexto.obtenerInstancia(PeliculasHome.class);
 //	}
-//	
-//	
 //	
 //	@Test
 //	public void test5() {

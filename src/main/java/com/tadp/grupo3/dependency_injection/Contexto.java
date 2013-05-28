@@ -6,11 +6,6 @@ import java.util.Collection;
 
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 
-import net.sf.staccatocommons.collections.stream.Streams;
-import static net.sf.staccatocommons.lambda.Lambda.$;
-import static net.sf.staccatocommons.lambda.Lambda.lambda;
-import net.sf.staccatocommons.collections.stream.Stream;
-
 public class Contexto {
 
 	// Properties
