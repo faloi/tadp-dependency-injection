@@ -1,20 +1,20 @@
 package com.tadp.grupo3.dependency_injection;
 
-public class Binding<TipoBase> {
+public class Binding {
 
-	private Class<TipoBase> tipoBase;
+	private Class<?> tipoBase;
 	private Class<?> tipoConcreto;
 	
-	public Binding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
+	public Binding(Class<?> tipoBase, Class<?> tipoConcreto) {
 		this.setTipoBase(tipoBase);
 		this.setTipoConcreto(tipoConcreto);
 	}
 
-	public Class<TipoBase> getTipoBase() {
+	public Class<?> getTipoBase() {
 		return tipoBase;
 	}
 
-	public void setTipoBase(Class<TipoBase> tipoBase) {
+	public void setTipoBase(Class<?> tipoBase) {
 		this.tipoBase = tipoBase;
 	}
 

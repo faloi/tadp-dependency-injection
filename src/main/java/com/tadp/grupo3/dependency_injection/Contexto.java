@@ -9,8 +9,8 @@ import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 public class Contexto {
 
 	// Properties
-	private Collection<Binding<Class<?>>> bindings;
-	private Collection<Binding<Class<?>>> getBindings() {
+	private Collection<Binding> bindings;
+	private Collection<Binding> getBindings() {
 		return bindings;
 	}
 	
@@ -20,17 +20,17 @@ public class Contexto {
 	}
 	
 	public Contexto() {
-		this.bindings = new ArrayList<Binding<Class<?>>>();
+		this.bindings = new ArrayList<Binding>();
 		this.bindingsPrimitivos = new ArrayList<BindingPrimitivo>();
 	}
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
-		this.agregarBinding(new Binding<TipoBase>(tipoBase, tipoConcreto));
+		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
 	}
 
 	public <T> T obtenerInstancia(Class<T> tipoBase) {
 		try {
-			for (Binding<?> binding : this.getBindings()) {
+			for (Binding binding : this.getBindings()) {
 				if (binding.getTipoBase().equals(tipoBase))
 					return (T) binding.getTipoConcreto().newInstance();
 			}
