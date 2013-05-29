@@ -4,6 +4,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoHayExactamenteUnSoloConstructorValidoException;
+
 public class PorConstructorStrategy implements ConstruccionStrategy {
 
 	public <T> T instanciar(Class<T> unaClase, Contexto unContexto) {
@@ -38,7 +41,7 @@ public class PorConstructorStrategy implements ConstruccionStrategy {
 			 try{
 				 unContexto.comprobarInstanciacionDelConstructor(unConstructor);
 				 unosConstructoresValidos.add(unConstructor);
-			 }catch(FaltaBindingException ex){
+			 }catch(NoExisteBindingException ex){
 				 
 			 }			 
 		 }

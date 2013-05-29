@@ -110,7 +110,7 @@ public class Contexto {
 			if(unBinding.getTipoBase().equals(unParametro))
 				return;
 		}
-		throw new FaltaBindingException();		
+		throw new NoExisteBindingException();		
 	}
 	
 	public void comprobarInstanciacionDelConstructor(Constructor unConstructor){

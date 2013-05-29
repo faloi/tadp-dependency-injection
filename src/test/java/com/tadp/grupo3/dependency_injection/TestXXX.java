@@ -81,7 +81,7 @@ public class TestXXX {
 		assertTrue(unController.home instanceof SqlPeliculasHome);
 	}
 	
-	@Test(expected=FaltaBindingException.class)
+	@Test(expected=NoExisteBindingException.class)
 	public void comprobarInstanciacionDeParametro(){
 		contexto.comprobarIntanciacionDelParametro(PeliculasController.class);
 	}
