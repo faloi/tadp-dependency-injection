@@ -69,12 +69,15 @@ public class TestXXX {
 	public void instanciarUnObjetoPorConstructor(){
 		
 		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
-		contexto.agregarBindingInstancia(PeliculasController.class, "algun valor");
-		 
+
 		PeliculasController unController = contexto.obtenerInstancia(PeliculasController.class, new PorConstructorStrategy());
 		
-		assertTrue(unController.home instanceof PeliculasHome);
-		assertEquals("algun valor" , unController.cadena);
+		assertTrue(unController.home instanceof SqlPeliculasHome);
+	}
+	
+	@Test(expected=FaltaBindingException.class)
+	public void comprobarInstanciacionDeParametro(){
+		contexto.comprobarIntanciacionDelParametro(PeliculasController.class);
 	}
 //	
 //	@Test

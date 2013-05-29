@@ -14,12 +14,12 @@ public class Contexto {
 
 	// Properties
 	private Collection<Binding> bindings;
-	private Collection<Binding> getBindings() {
+	public Collection<Binding> getBindings() {
 		return bindings;
 	}
 	
 	private Collection<BindingInstancia> bindingsInstancias;
-	private Collection<BindingInstancia> getBindingsPrimitivos() {
+	private Collection<BindingInstancia> getBindingsDeStrings() {
 		return bindingsInstancias;
 	}
 	
@@ -74,7 +74,13 @@ public class Contexto {
 	}
 
 	public void agregarBindingInstancia(Class<?> scope, Object objetoPrimitivo) {
-		this.getBindingsPrimitivos().add(new BindingInstancia(scope, objetoPrimitivo));
+		if(objetoPrimitivo instanceof String){
+			BindingInstancia unBindingDeInstancia = new BindingInstancia(scope, objetoPrimitivo);
+			unBindingDeInstancia.setTipo(String.class);
+			this.getBindingsDeStrings().add(unBindingDeInstancia);
+		}else{
+			
+		}
 	}
 	
 	private void agregarBinding(Binding binding) {
@@ -82,7 +88,7 @@ public class Contexto {
 	}
 
 	public <TipoPrimitivo> TipoPrimitivo obtenerObjetoPrimitivoPara(Class<?> scope, Class<TipoPrimitivo> tipoPrimitivo) {
-		List<BindingInstancia> bindings = filter(having(on(BindingInstancia.class).esScope(scope)), this.getBindingsPrimitivos());
+		List<BindingInstancia> bindings = filter(having(on(BindingInstancia.class).esScope(scope)), this.getBindingsDeStrings());
 		
 		if (bindings.isEmpty())
 			throw new NoExisteBindingException();
@@ -113,6 +119,5 @@ public class Contexto {
 		for(Class<?> unParametro : unosParametros)
 			this.comprobarIntanciacionDelParametro(unParametro);		
 	}
-
 
 }

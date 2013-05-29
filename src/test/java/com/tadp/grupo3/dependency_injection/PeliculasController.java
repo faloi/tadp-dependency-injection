@@ -5,8 +5,7 @@ public class PeliculasController {
 	public PeliculasHome home;
 	public String cadena;
 	
-	public PeliculasController(PeliculasHome unHome,String unaCadena){
+	public PeliculasController(PeliculasHome unHome){
 	      this.home = unHome;
-	      this.cadena = unaCadena;
 	}
 }

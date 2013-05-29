@@ -4,12 +4,21 @@ public class BindingInstancia {
 	
 	private Class<?> scope;
 	private Object objetoPrimitivo;
+	private Class<?> tipo;
 
 	public BindingInstancia(Class<?> scope, Object objetoPrimitivo) {
 		this.setScope(scope);
 		this.setObjetoPrimitivo(objetoPrimitivo);
 	}
 
+	public void setTipo(Class<?> unTipo){
+		this.tipo = unTipo;
+	}
+	
+	public Class<?> getTipo(){
+		return tipo;
+	}
+	
 	public Object getObjetoPrimitivo() {
 		return objetoPrimitivo;
 	}
