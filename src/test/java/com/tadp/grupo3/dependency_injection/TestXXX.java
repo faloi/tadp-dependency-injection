@@ -8,9 +8,7 @@ import org.junit.Test;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
-import com.tadp.grupo3.dependency_injection.fixture.CorreaDePerro;
-import com.tadp.grupo3.dependency_injection.fixture.CorreaMetalica;
-import com.tadp.grupo3.dependency_injection.fixture.Perro;
+import com.tadp.grupo3.dependency_injection.fixture.*;
 
 public class TestXXX {
 
