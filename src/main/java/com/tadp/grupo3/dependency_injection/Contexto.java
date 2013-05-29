@@ -18,22 +18,27 @@ public class Contexto {
 		return bindings;
 	}
 	
-	private Collection<BindingPrimitivo> bindingsPrimitivos;
-	private Collection<BindingPrimitivo> getBindingsPrimitivos() {
-		return bindingsPrimitivos;
+	private Collection<BindingInstancia> bindingsInstancias;
+	private Collection<BindingInstancia> getBindingsPrimitivos() {
+		return bindingsInstancias;
 	}
 	
 	public Contexto() {
 		this.bindings = new ArrayList<Binding>();
-		this.bindingsPrimitivos = new ArrayList<BindingPrimitivo>();
+		this.bindingsInstancias = new ArrayList<BindingInstancia>();
 	}
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
 		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
 	}
 
-	public <T> T obtenerInstancia(Class<T> tipoBase) {
-		try {
+	public <T> T obtenerInstancia(Class<T> tipoBase){
+		return this.obtenerInstancia(tipoBase,new PorConstructorStrategy());
+	}
+	
+	public <T> T obtenerInstancia(Class<T> tipoBase, ConstruccionStrategy unStrategy) {
+		return unStrategy.instanciar(tipoBase,this);
+		/*		try {
 			List<Binding> bindings = filter(having(on(Binding.class).esTipoBase(tipoBase)), this.getBindings());
 			
 			if (bindings.isEmpty())
@@ -47,7 +52,7 @@ public class Contexto {
 			throw new RuntimeException(e);
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 	
 	public Object instanciarObjeto(Class<?> clazz) {
@@ -68,8 +73,8 @@ public class Contexto {
 		return null;
 	}
 
-	public void agregarBindingPrimitivo(Class<?> scope, Object objetoPrimitivo) {
-		this.getBindingsPrimitivos().add(new BindingPrimitivo(scope, objetoPrimitivo));
+	public void agregarBindingInstancia(Class<?> scope, Object objetoPrimitivo) {
+		this.getBindingsPrimitivos().add(new BindingInstancia(scope, objetoPrimitivo));
 	}
 	
 	private void agregarBinding(Binding binding) {
@@ -77,7 +82,7 @@ public class Contexto {
 	}
 
 	public <TipoPrimitivo> TipoPrimitivo obtenerObjetoPrimitivoPara(Class<?> scope, Class<TipoPrimitivo> tipoPrimitivo) {
-		List<BindingPrimitivo> bindings = filter(having(on(BindingPrimitivo.class).esScope(scope)), this.getBindingsPrimitivos());
+		List<BindingInstancia> bindings = filter(having(on(BindingInstancia.class).esScope(scope)), this.getBindingsPrimitivos());
 		
 		if (bindings.isEmpty())
 			throw new NoExisteBindingException();
@@ -87,5 +92,27 @@ public class Contexto {
 		
 		return (TipoPrimitivo) bindings.get(0).getObjetoPrimitivo();
 	}
+
+	
+	public void comprobarIntanciacionDelParametro(Class<?> unParametro){
+		//Aplanamos la coleccion a mano.
+		for(BindingInstancia unBindingDeInstancia : bindingsInstancias){
+			if(unBindingDeInstancia.getScope().equals(unParametro))
+				return;
+		}
+		for(Binding unBinding : bindings){
+			if(unBinding.getTipoBase().equals(unParametro))
+				return;
+		}
+		throw new FaltaBindingException();		
+	}
+	
+	public void comprobarInstanciacionDelConstructor(Constructor unConstructor){
+		Class<?>[] unosParametros = unConstructor.getParameterTypes();
+		
+		for(Class<?> unParametro : unosParametros)
+			this.comprobarIntanciacionDelParametro(unParametro);		
+	}
+
 
 }

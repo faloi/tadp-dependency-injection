@@ -1,11 +1,11 @@
 package com.tadp.grupo3.dependency_injection;
 
-public class BindingPrimitivo {
+public class BindingInstancia {
 	
 	private Class<?> scope;
 	private Object objetoPrimitivo;
 
-	public BindingPrimitivo(Class<?> scope, Object objetoPrimitivo) {
+	public BindingInstancia(Class<?> scope, Object objetoPrimitivo) {
 		this.setScope(scope);
 		this.setObjetoPrimitivo(objetoPrimitivo);
 	}

@@ -56,14 +56,25 @@ public class TestXXX {
 	
 	@Test
 	public void obtenerObjetoPrimitivoPara_retorna_el_objeto_configurado_para_el_scope_dado() {
-		contexto.agregarBindingPrimitivo(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
-		contexto.agregarBindingPrimitivo(EnMemoriaPeliculasHome.class, "0x88AB82");
+		contexto.agregarBindingInstancia(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
+		contexto.agregarBindingInstancia(EnMemoriaPeliculasHome.class, "0x88AB82");
 		
 		String cadenaConexion = contexto.obtenerObjetoPrimitivoPara(SqlPeliculasHome.class, String.class);
 		String offset = contexto.obtenerObjetoPrimitivoPara(EnMemoriaPeliculasHome.class, String.class);
 		
 		assertEquals("...cadena de conexion a SQL...", cadenaConexion);
 		assertEquals("0x88AB82", offset);
+	}
+	@Test
+	public void instanciarUnObjetoPorConstructor(){
+		
+		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		contexto.agregarBindingInstancia(PeliculasController.class, "algun valor");
+		 
+		PeliculasController unController = contexto.obtenerInstancia(PeliculasController.class, new PorConstructorStrategy());
+		
+		assertTrue(unController.home instanceof PeliculasHome);
+		assertEquals("algun valor" , unController.cadena);
 	}
 //	
 //	@Test
