@@ -1,4 +1,4 @@
-package com.tadp.grupo3.dependency_injection;
+package com.tadp.grupo3.dependency_injection.fixture_peliculas;
 
 public class PeliculasController {
 

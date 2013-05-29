@@ -1,4 +1,4 @@
-package com.tadp.grupo3.dependency_injection.fixture;
+package com.tadp.grupo3.dependency_injection.fixture_perros;
 
 public class CorreaMetalica implements CorreaDePerro {
 

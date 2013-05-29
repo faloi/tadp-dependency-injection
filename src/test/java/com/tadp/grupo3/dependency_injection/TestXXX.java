@@ -8,9 +8,15 @@ import org.junit.Test;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
-import com.tadp.grupo3.dependency_injection.fixture.CorreaDePerro;
-import com.tadp.grupo3.dependency_injection.fixture.CorreaMetalica;
-import com.tadp.grupo3.dependency_injection.fixture.Perro;
+import com.tadp.grupo3.dependency_injection.fixture_peliculas.EnMemoriaPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture_peliculas.PeliculasController;
+import com.tadp.grupo3.dependency_injection.fixture_peliculas.PeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture_peliculas.PersonaHome;
+import com.tadp.grupo3.dependency_injection.fixture_peliculas.SqlPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture_perros.Bulldog;
+import com.tadp.grupo3.dependency_injection.fixture_perros.CorreaDePerro;
+import com.tadp.grupo3.dependency_injection.fixture_perros.CorreaMetalica;
+import com.tadp.grupo3.dependency_injection.fixture_perros.Perro;
 
 public class TestXXX {
 
