@@ -7,7 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.fixture.*;
 
 public class TestXXX {
@@ -69,18 +71,28 @@ public class TestXXX {
 		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
 
-		assertNotNull(unController.getHome());
-		assertThat(unController.getHome(), instanceOf(SqlPeliculasHome.class));
+		assertNotNull(unController.getPeliculasHome());
+		assertThat(unController.getPeliculasHome(), instanceOf(SqlPeliculasHome.class));
 	}
 
 	@Test(expected = NoHayConstructorValidoException.class)
 	public void test2(){
 		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
 
-		assertNotNull(unController.getHome());
-		assertThat(unController.getHome(), instanceOf(SqlPeliculasHome.class));
+		assertNotNull(unController.getPeliculasHome());
+		assertThat(unController.getPeliculasHome(), instanceOf(SqlPeliculasHome.class));
 	}
-	
+
+	@Test(expected = MasDeUnConstructorValidoException.class)
+	public void test3(){
+		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		contexto.agregarBinding(UsuariosHome.class, MongoDbUsuariosHome.class);
+		
+		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
+
+		assertNotNull(unController.getPeliculasHome());
+		assertThat(unController.getPeliculasHome(), instanceOf(SqlPeliculasHome.class));
+	}
 //	@Test
 //	public void test5() {
 //		this.contexto.agregarBinding(Perro.class, Bulldog.class);

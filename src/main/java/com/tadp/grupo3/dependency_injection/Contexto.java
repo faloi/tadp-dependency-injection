@@ -9,7 +9,9 @@ import java.util.List;
 import ch.lambdaj.function.convert.Converter;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.fixture.PeliculasController;
 
 import static ch.lambdaj.Lambda.*;
@@ -104,9 +106,9 @@ public class Contexto {
 		
 		if (constructoresValidos.isEmpty())
 			throw new NoHayConstructorValidoException();
-//		
-//		if (constructoresValidos.size() > 1)
-//			throw new MasDeUnConstructorValidoException();
+		
+		if (constructoresValidos.size() > 1)
+			throw new MasDeUnConstructorValidoException();
 		
 		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0));	
 	}
