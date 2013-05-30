@@ -23,14 +23,14 @@ public class Contexto {
 		return bindings;
 	}
 	
-	private Collection<BindingPrimitivo> bindingsPrimitivos;
-	private Collection<BindingPrimitivo> getBindingsPrimitivos() {
-		return bindingsPrimitivos;
+	private Collection<BindingDeInstancia> bindingsDeInstancia;
+	private Collection<BindingDeInstancia> getBindingsDeInstancia() {
+		return bindingsDeInstancia;
 	}
 	
 	public Contexto() {
 		this.bindings = new ArrayList<Binding>();
-		this.bindingsPrimitivos = new ArrayList<BindingPrimitivo>();
+		this.bindingsDeInstancia = new ArrayList<BindingDeInstancia>();
 	}
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
@@ -49,16 +49,16 @@ public class Contexto {
 		return bindings.get(0).getTipoConcreto();
 	}
 	
-	public void agregarBindingPrimitivo(Class<?> scope, Object objetoPrimitivo) {
-		this.getBindingsPrimitivos().add(new BindingPrimitivo(scope, objetoPrimitivo));
+	public void agregarBindingDeInstancia(Class<?> scope, Object instancia) {
+		this.getBindingsDeInstancia().add(new BindingDeInstancia(scope, instancia));
 	}
 	
 	private void agregarBinding(Binding binding) {
 		this.getBindings().add(binding);
 	}
 
-	public <TipoPrimitivo> TipoPrimitivo obtenerObjetoPrimitivoPara(Class<?> scope, Class<TipoPrimitivo> tipoPrimitivo) {
-		List<BindingPrimitivo> bindings = filter(having(on(BindingPrimitivo.class).esScope(scope)), this.getBindingsPrimitivos());
+	public <TipoInstancia> TipoInstancia obtenerInstanciaPara(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
+		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), this.getBindingsDeInstancia());
 		
 		if (bindings.isEmpty())
 			throw new NoExisteBindingException();
@@ -66,7 +66,7 @@ public class Contexto {
 		if (bindings.size() > 1)
 			throw new MasDeUnBindingException();
 		
-		return (TipoPrimitivo) bindings.get(0).getObjetoPrimitivo();
+		return (TipoInstancia) bindings.get(0).getInstancia();
 	}
 
 	public <T> T creameUnObjeto(Class<T> claseAInstanciar) {
