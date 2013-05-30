@@ -57,7 +57,19 @@ public class Contexto {
 		this.getBindings().add(binding);
 	}
 
-	private <TipoInstancia> TipoInstancia obtenerInstanciaPara(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
+	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
+		return obtenerObjeto(claseAInstanciar, claseAInstanciar);
+	}
+
+	private <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
+		try {
+			return this.obtenerObjetoDesdeBindingDeInstancia(solicitante, claseAInstanciar);
+		} catch (Exception e) {
+			return this.obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
+		}
+	}
+	
+	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingDeInstancia(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
 		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), this.getBindingsDeInstancia());
 		
 		if (bindings.isEmpty())
@@ -69,24 +81,12 @@ public class Contexto {
 		return (TipoInstancia) bindings.get(0).getInstancia();
 	}
 
-	public <T> T creameUnObjeto(Class<T> claseAInstanciar) {
-		return creameUnObjeto(claseAInstanciar, claseAInstanciar);
-	}
-
-	private <T> T creameUnObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
-		try {
-			return this.obtenerInstanciaPara(solicitante, claseAInstanciar);
-		} catch (Exception e) {
-			return this.crearObjetoAPartirDeBindingsDeClase(claseAInstanciar, solicitante);	
-		}
-	}
-
-	private <T> T crearObjetoAPartirDeBindingsDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
+	private <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
 		Class<?> clasePosta = this.obtenerTipoPostaPara(claseAInstanciar);
 		
 		Constructor<?>[] constructores = clasePosta.getConstructors();
 		
-		if (this.esUnaHoja(clasePosta, constructores))
+		if (this.esDirectamenteInstanciable(clasePosta, constructores))
 			try {
 				return (T) clasePosta.newInstance();
 			} catch (InstantiationException e) {
@@ -110,7 +110,7 @@ public class Contexto {
 		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0), solicitante);
 	}
 
-	private <T> boolean esUnaHoja(Class<T> claseAInstanciar, Constructor<?>[] constructores) {
+	private <T> boolean esDirectamenteInstanciable(Class<T> claseAInstanciar, Constructor<?>[] constructores) {
 		Class<?>[] parametros = constructores[0].getParameterTypes();
 		return constructores.length == 1 && parametros.length == 0;
 	}
@@ -118,7 +118,7 @@ public class Contexto {
 	private Object instanciarObjetoUsando(Constructor<?> constructor, Class<?> solicitante) {
 		List<Object> argumentos = new ArrayList<Object>();
 		for (Class<?> tipoDeParametro : constructor.getParameterTypes()) {
-			argumentos.add(this.creameUnObjeto(tipoDeParametro, solicitante));
+			argumentos.add(this.obtenerObjeto(tipoDeParametro, solicitante));
 		}
 		
 		try {

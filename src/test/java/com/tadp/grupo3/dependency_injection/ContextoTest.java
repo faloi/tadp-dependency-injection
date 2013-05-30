@@ -1,8 +1,7 @@
 package com.tadp.grupo3.dependency_injection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ public class ContextoTest {
 	@Test
 	public void creameUnObjeto_crea_un_objeto_del_tipo_especificado_en_el_binding() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
-		PeliculasHome home = contexto.creameUnObjeto(PeliculasHome.class);
+		PeliculasHome home = contexto.obtenerObjeto(PeliculasHome.class);
 		
 		assertThat(home, instanceOf(EnMemoriaPeliculasHome.class));
 	}
@@ -31,8 +30,8 @@ public class ContextoTest {
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		this.contexto.agregarBinding(Perro.class, Bulldog.class);
 
-		Perro perro = contexto.creameUnObjeto(Perro.class);
-		PeliculasHome home = contexto.creameUnObjeto(PeliculasHome.class);
+		Perro perro = contexto.obtenerObjeto(Perro.class);
+		PeliculasHome home = contexto.obtenerObjeto(PeliculasHome.class);
 		
 		assertThat(home, instanceOf(SqlPeliculasHome.class));
 		assertThat(perro, instanceOf(Bulldog.class));
@@ -40,7 +39,7 @@ public class ContextoTest {
 	
 	@Test(expected=NoExisteBindingException.class)
 	public void creameUnObjeto_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
-		this.contexto.creameUnObjeto(PersonaHome.class);
+		this.contexto.obtenerObjeto(PersonaHome.class);
 	}
 	
 	@Test(expected=MasDeUnBindingException.class)
@@ -48,13 +47,13 @@ public class ContextoTest {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		
-		this.contexto.creameUnObjeto(PeliculasHome.class);
+		this.contexto.obtenerObjeto(PeliculasHome.class);
 	}
 	
 	@Test(expected = NoHayConstructorValidoException.class)
 	public void creameUnObjeto_explota_si_no_hay_ningun_constructor_valido(){
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
-		contexto.creameUnObjeto(PeliculasController.class);
+		contexto.obtenerObjeto(PeliculasController.class);
 	}
 
 	@Test(expected = MasDeUnConstructorValidoException.class)
@@ -63,7 +62,7 @@ public class ContextoTest {
 		contexto.agregarBinding(UsuariosHome.class, MongoDbUsuariosHome.class);
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		
-		contexto.creameUnObjeto(PeliculasController.class);
+		contexto.obtenerObjeto(PeliculasController.class);
 	}
 	
 	@Test
@@ -72,10 +71,10 @@ public class ContextoTest {
 		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		
-		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
+		PeliculasController unController = contexto.obtenerObjeto(PeliculasController.class);
 		
-		assertThat(unController.getPeliculasHome(), instanceOf(MongoDbPeliculasHome.class));
-		assertThat(unController.getPeliculasHome().getLogger(), instanceOf(MongoDbLogger.class));
+		assertThat(unController.getHomePeliculas(), instanceOf(MongoDbPeliculasHome.class));
+		assertThat(unController.getHomePeliculas().getLogger(), instanceOf(MongoDbLogger.class));
 	}
 	
 	@Test
@@ -84,8 +83,20 @@ public class ContextoTest {
 		contexto.agregarBindingDeInstancia(MongoDbPeliculasHome.class, mongoDbLogger);
 		contexto.agregarBinding(MongoDbPeliculasHome.class, MongoDbPeliculasHome.class);
 		
-		MongoDbPeliculasHome home = contexto.creameUnObjeto(MongoDbPeliculasHome.class);
+		MongoDbPeliculasHome home = contexto.obtenerObjeto(MongoDbPeliculasHome.class);
 		
 		assertEquals(mongoDbLogger, home.getLogger());
+	}
+	
+	@Test
+	public void test1() {
+		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
+		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
+		
+		PeliculasController unController = contexto.obtenerObjeto(PeliculasController.class);
+		
+		assertTrue(unController.getHomesPeliculas().get(0) instanceof SqlPeliculasHome);
+		assertTrue(unController.getHomesPeliculas().get(1) instanceof MongoDbPeliculasHome);
 	}
 }
