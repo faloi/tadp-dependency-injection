@@ -63,7 +63,24 @@ public class TestXXX {
 		assertEquals("...cadena de conexion a SQL...", cadenaConexion);
 		assertEquals("0x88AB82", offset);
 	}
-//	
+
+	@Test
+	public void test1(){
+		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
+
+		assertNotNull(unController.getHome());
+		assertThat(unController.getHome(), instanceOf(SqlPeliculasHome.class));
+	}
+
+	@Test(expected = NoHayConstructorValidoException.class)
+	public void test2(){
+		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
+
+		assertNotNull(unController.getHome());
+		assertThat(unController.getHome(), instanceOf(SqlPeliculasHome.class));
+	}
+	
 //	@Test
 //	public void test5() {
 //		this.contexto.agregarBinding(Perro.class, Bulldog.class);

@@ -1,12 +1,17 @@
 package com.tadp.grupo3.dependency_injection;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ch.lambdaj.function.convert.Converter;
+
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.fixture.PeliculasController;
+
 import static ch.lambdaj.Lambda.*;
 import static org.hamcrest.Matchers.*;
 
@@ -86,6 +91,62 @@ public class Contexto {
 			throw new MasDeUnBindingException();
 		
 		return (TipoPrimitivo) bindings.get(0).getObjetoPrimitivo();
+	}
+
+	public <T> T creameUnObjeto(Class<T> claseAInstanciar) {
+		Constructor<?>[] constructores = claseAInstanciar.getConstructors();
+		
+		List<Constructor<?>> constructoresValidos = new ArrayList<Constructor<?>>();
+		for (Constructor<?> constructor : constructores) {
+			if (this.puedoUsarEsteConstructor(constructor))
+				constructoresValidos.add(constructor);
+		}
+		
+		if (constructoresValidos.isEmpty())
+			throw new NoHayConstructorValidoException();
+//		
+//		if (constructoresValidos.size() > 1)
+//			throw new MasDeUnConstructorValidoException();
+		
+		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0));	
+	}
+
+	private Object instanciarObjetoUsando(Constructor<?> constructor) {
+		List<Object> argumentos = new ArrayList<Object>();
+		for (Class<?> tipoDeParametro : constructor.getParameterTypes()) {
+			argumentos.add(this.obtenerInstancia(tipoDeParametro));
+		}
+		
+		try {
+			return constructor.newInstance(argumentos.toArray());
+		} catch (InstantiationException e) {
+			throw new RuntimeException();
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException();
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException();
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException();
+		}
+	}
+
+	private Boolean puedoUsarEsteConstructor(Constructor<?> unConstructor) {
+		//allSatisfy
+		for (Class<?> tipoDeParametro : unConstructor.getParameterTypes())
+			if (!this.puedoInstanciarUn(tipoDeParametro))
+				return false;
+		
+		return true;
+	}
+
+	private Boolean puedoInstanciarUn(Class<?> unTipo) {
+		//anySatisfy
+		for(Binding unBinding : bindings){
+			if(unBinding.getTipoBase().equals(unTipo))
+				return true;
+		}
+
+		return false;
 	}
 
 }

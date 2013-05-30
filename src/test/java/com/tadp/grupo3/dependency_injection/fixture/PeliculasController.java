@@ -2,10 +2,18 @@ package com.tadp.grupo3.dependency_injection.fixture;
 
 public class PeliculasController {
 
-	public PeliculasHome home;
+	private PeliculasHome home;
 	public String cadena;
 	
 	public PeliculasController(PeliculasHome unHome){
-	      this.home = unHome;
+	      this.setHome(unHome);
+	}
+
+	public PeliculasHome getHome() {
+		return home;
+	}
+
+	public void setHome(PeliculasHome home) {
+		this.home = home;
 	}
 }
