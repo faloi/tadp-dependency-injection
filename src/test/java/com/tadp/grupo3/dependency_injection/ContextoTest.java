@@ -102,4 +102,14 @@ public class ContextoTest {
 		assertThat(unController.getPeliculasHome().getLogger(), instanceOf(MongoDbLogger.class));
 	}
 	
+	@Test
+	public void creameUnObjeto_usa_los_bindings_de_instancia_para_resolver_dependencias() {
+		MongoDbLogger mongoDbLogger = new MongoDbLogger();
+		contexto.agregarBindingDeInstancia(MongoDbPeliculasHome.class, mongoDbLogger);
+		contexto.agregarBinding(MongoDbPeliculasHome.class, MongoDbPeliculasHome.class);
+		
+		MongoDbPeliculasHome home = contexto.creameUnObjeto(MongoDbPeliculasHome.class);
+		
+		assertEquals(mongoDbLogger, home.getLogger());
+	}
 }

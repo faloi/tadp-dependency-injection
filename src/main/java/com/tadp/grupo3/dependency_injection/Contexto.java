@@ -70,6 +70,18 @@ public class Contexto {
 	}
 
 	public <T> T creameUnObjeto(Class<T> claseAInstanciar) {
+		return creameUnObjeto(claseAInstanciar, claseAInstanciar);
+	}
+
+	private <T> T creameUnObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
+		try {
+			return this.obtenerInstanciaPara(solicitante, claseAInstanciar);
+		} catch (Exception e) {
+			return this.crearObjetoAPartirDeBindingsDeClase(claseAInstanciar, solicitante);	
+		}
+	}
+
+	private <T> T crearObjetoAPartirDeBindingsDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
 		Class<?> clasePosta = this.obtenerTipoPostaPara(claseAInstanciar);
 		
 		Constructor<?>[] constructores = clasePosta.getConstructors();
@@ -85,7 +97,7 @@ public class Contexto {
 			
 		List<Constructor<?>> constructoresValidos = new ArrayList<Constructor<?>>();
 		for (Constructor<?> constructor : constructores) {
-			if (this.puedoUsarEsteConstructor(constructor))
+			if (this.puedoUsarEsteConstructor(constructor, solicitante))
 				constructoresValidos.add(constructor);
 		}
 		
@@ -95,7 +107,7 @@ public class Contexto {
 		if (constructoresValidos.size() > 1)
 			throw new MasDeUnConstructorValidoException();
 		
-		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0));	
+		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0), solicitante);
 	}
 
 	private <T> boolean esUnaHoja(Class<T> claseAInstanciar, Constructor<?>[] constructores) {
@@ -103,10 +115,10 @@ public class Contexto {
 		return constructores.length == 1 && parametros.length == 0;
 	}
 
-	private Object instanciarObjetoUsando(Constructor<?> constructor) {
+	private Object instanciarObjetoUsando(Constructor<?> constructor, Class<?> solicitante) {
 		List<Object> argumentos = new ArrayList<Object>();
 		for (Class<?> tipoDeParametro : constructor.getParameterTypes()) {
-			argumentos.add(this.creameUnObjeto(tipoDeParametro));
+			argumentos.add(this.creameUnObjeto(tipoDeParametro, solicitante));
 		}
 		
 		try {
@@ -123,22 +135,27 @@ public class Contexto {
 		}
 	}
 
-	private Boolean puedoUsarEsteConstructor(Constructor<?> unConstructor) {
+	private Boolean puedoUsarEsteConstructor(Constructor<?> unConstructor, Class<?> solicitante) {
 		//allSatisfy
 		for (Class<?> tipoDeParametro : unConstructor.getParameterTypes())
-			if (!this.puedoInstanciarUn(tipoDeParametro))
+			if (!this.puedoInstanciarUn(tipoDeParametro, solicitante))
 				return false;
 		
 		return true;
 	}
 
-	private Boolean puedoInstanciarUn(Class<?> unTipo) {
+	private Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
 		//anySatisfy
-		for(Binding unBinding : bindings){
-			if(unBinding.getTipoBase().equals(unTipo))
+		for(Binding unBinding : this.getBindings()){
+			if(unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		}
 
+		for(BindingDeInstancia unBinding : this.getBindingsDeInstancia()){
+			if(unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		}		
+		
 		return false;
 	}
 

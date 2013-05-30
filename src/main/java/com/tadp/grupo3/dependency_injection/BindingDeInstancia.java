@@ -29,7 +29,7 @@ public class BindingDeInstancia {
 	}
 
 	public Boolean esValidoPara(Class<?> otroScope, Class<?> tipoInstancia) {
-		return this.getScope().equals(otroScope) && this.getTipo().equals(tipoInstancia);
+		return this.getScope().equals(otroScope) && tipoInstancia.isAssignableFrom(this.getTipo());
 	}
 
 	public Class<?> getTipo() {

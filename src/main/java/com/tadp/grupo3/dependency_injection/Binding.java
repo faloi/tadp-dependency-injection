@@ -30,4 +30,8 @@ public class Binding {
 		this.tipoConcreto = tipoConcreto;
 	}
 
+	public boolean esValidoPara(Class<?> _, Class<?> unTipo) {
+		return this.getTipoBase().equals(unTipo);
+	}
+
 }
