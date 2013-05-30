@@ -1,6 +1,6 @@
 package com.tadp.grupo3.dependency_injection.fixture;
 
-public class SqlPeliculasHome implements PeliculasHome {
+public class SqlPeliculasHome extends PeliculasHome {
 
 	public String[] dameTodasTusPeliculas() {
 		// TODO Auto-generated method stub

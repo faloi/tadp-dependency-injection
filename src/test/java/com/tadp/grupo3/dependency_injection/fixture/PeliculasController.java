@@ -10,12 +10,16 @@ public class PeliculasController {
 	public PeliculasController(PeliculasHome unHome){
 	      this.setPeliculasHome(unHome);
 	}
+
+	public PeliculasController(UsuariosHome unHomeDeUsuarios) {
+		this.homeUsuarios = unHomeDeUsuarios;
+	}
 	
 	public PeliculasController(PeliculasHome unHomeDePeliculas, UsuariosHome unHomeDeUsuarios) {
 		this(unHomeDePeliculas);
 		this.setHomeUsuarios(unHomeDeUsuarios);
 	}
-
+	
 	public PeliculasHome getPeliculasHome() {
 		return homePeliculas;
 	}
