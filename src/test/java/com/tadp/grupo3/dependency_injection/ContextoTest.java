@@ -51,30 +51,6 @@ public class ContextoTest {
 		this.contexto.creameUnObjeto(PeliculasHome.class);
 	}
 	
-	@Test
-	public void obtenerObjetoPrimitivoPara_retorna_el_objeto_configurado_para_el_scope_dado() {
-		contexto.agregarBindingDeInstancia(SqlPeliculasHome.class, "...cadena de conexion a SQL...");
-		contexto.agregarBindingDeInstancia(EnMemoriaPeliculasHome.class, "0x88AB82");
-		
-		String cadenaConexion = contexto.obtenerInstanciaPara(SqlPeliculasHome.class, String.class);
-		String offset = contexto.obtenerInstanciaPara(EnMemoriaPeliculasHome.class, String.class);
-		
-		assertEquals("...cadena de conexion a SQL...", cadenaConexion);
-		assertEquals("0x88AB82", offset);
-	}
-
-	@Test
-	public void obtenerInstanciaPara_permite_definir_mas_de_un_binding_de_instancia_por_clase() {
-		contexto.agregarBindingDeInstancia(SqlPeliculasHome.class, "200.46.12.154");
-		contexto.agregarBindingDeInstancia(SqlPeliculasHome.class, 8080);
-		
-		String ip = contexto.obtenerInstanciaPara(SqlPeliculasHome.class, String.class);
-		int puerto = contexto.obtenerInstanciaPara(SqlPeliculasHome.class, Integer.class);
-		
-		assertEquals("200.46.12.154", ip);
-		assertEquals(8080, puerto);
-	}
-	
 	@Test(expected = NoHayConstructorValidoException.class)
 	public void creameUnObjeto_explota_si_no_hay_ningun_constructor_valido(){
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);

@@ -57,7 +57,7 @@ public class Contexto {
 		this.getBindings().add(binding);
 	}
 
-	public <TipoInstancia> TipoInstancia obtenerInstanciaPara(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
+	private <TipoInstancia> TipoInstancia obtenerInstanciaPara(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
 		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), this.getBindingsDeInstancia());
 		
 		if (bindings.isEmpty())
