@@ -1,21 +1,19 @@
 package com.tadp.grupo3.dependency_injection;
 
+import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ch.lambdaj.function.convert.Converter;
-
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
-import com.tadp.grupo3.dependency_injection.fixture.PeliculasController;
-
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
 
 public class Contexto {
 
@@ -39,17 +37,7 @@ public class Contexto {
 		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
 	}
 
-	public <T> T obtenerInstancia(Class<T> tipoBase) {
-		try {
-			return (T) obtenerTipoConcretoPara(tipoBase).newInstance();
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	private Class<?> obtenerTipoConcretoPara(Class<?> tipoBase) {
+	private Class<?> obtenerTipoPostaPara(Class<?> tipoBase) {
 		List<Binding> bindings = filter(having(on(Binding.class).esTipoBase(tipoBase)), this.getBindings());
 		
 		if (bindings.isEmpty())
@@ -82,11 +70,13 @@ public class Contexto {
 	}
 
 	public <T> T creameUnObjeto(Class<T> claseAInstanciar) {
-		Constructor<?>[] constructores = claseAInstanciar.getConstructors();
+		Class<?> clasePosta = this.obtenerTipoPostaPara(claseAInstanciar);
 		
-		if (this.esUnaHoja(claseAInstanciar, constructores))
+		Constructor<?>[] constructores = clasePosta.getConstructors();
+		
+		if (this.esUnaHoja(clasePosta, constructores))
 			try {
-				return (T) claseAInstanciar.newInstance();
+				return (T) clasePosta.newInstance();
 			} catch (InstantiationException e) {
 				throw new RuntimeException();
 			} catch (IllegalAccessException e) {
@@ -116,8 +106,7 @@ public class Contexto {
 	private Object instanciarObjetoUsando(Constructor<?> constructor) {
 		List<Object> argumentos = new ArrayList<Object>();
 		for (Class<?> tipoDeParametro : constructor.getParameterTypes()) {
-			Class<?> tipoConcreto = this.obtenerTipoConcretoPara(tipoDeParametro);
-			argumentos.add(this.creameUnObjeto(tipoConcreto));
+			argumentos.add(this.creameUnObjeto(tipoDeParametro));
 		}
 		
 		try {

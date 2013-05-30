@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import com.tadp.grupo3.dependency_injection.exceptions.*;
 import com.tadp.grupo3.dependency_injection.fixture.*;
-public class TestXXX {
+public class ContextoTest {
 
 	private Contexto contexto;
 
@@ -19,36 +19,36 @@ public class TestXXX {
 	}
 	
 	@Test
-	public void obtenerInstancia_crea_un_objeto_del_tipo_especificado_en_el_binding() {
+	public void creameUnObjeto_crea_un_objeto_del_tipo_especificado_en_el_binding() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
-		PeliculasHome home = contexto.obtenerInstancia(PeliculasHome.class);
+		PeliculasHome home = contexto.creameUnObjeto(PeliculasHome.class);
 		
 		assertThat(home, instanceOf(EnMemoriaPeliculasHome.class));
 	}
 
 	@Test
-	public void obtenerInstancia_crea_objetos_de_los_tipos_especificados_en_los_bindings() {
+	public void creameUnObjeto_crea_objetos_de_los_tipos_especificados_en_los_bindings() {
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		this.contexto.agregarBinding(Perro.class, Bulldog.class);
 
-		Perro perro = contexto.obtenerInstancia(Perro.class);
-		PeliculasHome home = contexto.obtenerInstancia(PeliculasHome.class);
+		Perro perro = contexto.creameUnObjeto(Perro.class);
+		PeliculasHome home = contexto.creameUnObjeto(PeliculasHome.class);
 		
 		assertThat(home, instanceOf(SqlPeliculasHome.class));
 		assertThat(perro, instanceOf(Bulldog.class));
 	}
 	
 	@Test(expected=NoExisteBindingException.class)
-	public void obtenerInstancia_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
-		this.contexto.obtenerInstancia(PersonaHome.class);
+	public void creameUnObjeto_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
+		this.contexto.creameUnObjeto(PersonaHome.class);
 	}
 	
 	@Test(expected=MasDeUnBindingException.class)
-	public void obtenerInstancia_explota_si_hay_mas_de_un_binding_para_el_tipo_solicitado() {
+	public void creameUnObjeto_explota_si_hay_mas_de_un_binding_para_el_tipo_solicitado() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		
-		this.contexto.obtenerInstancia(PeliculasHome.class);
+		this.contexto.creameUnObjeto(PeliculasHome.class);
 	}
 	
 	@Test
@@ -66,29 +66,33 @@ public class TestXXX {
 	@Test
 	public void test1(){
 		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
+		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
+		
 		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
 
 		assertThat(unController.getPeliculasHome(), instanceOf(SqlPeliculasHome.class));
 	}
 
 	@Test(expected = NoHayConstructorValidoException.class)
-	public void test2(){
-		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
-		assertThat(unController.getPeliculasHome(), instanceOf(SqlPeliculasHome.class));
+	public void creameUnObjeto_explota_si_no_hay_ningun_constructor_valido(){
+		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
+		contexto.creameUnObjeto(PeliculasController.class);
 	}
 
 	@Test(expected = MasDeUnConstructorValidoException.class)
-	public void test3(){
+	public void creameUnObjeto_explota_si_se_podria_instanciar_usando_mas_de_un_constructor(){
 		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		contexto.agregarBinding(UsuariosHome.class, MongoDbUsuariosHome.class);
+		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		
 		contexto.creameUnObjeto(PeliculasController.class);
 	}
 	
 	@Test
-	public void test4() {
+	public void creameUnObjeto_crea_recursivamente_las_dependencias_del_tipo_dado() {
 		contexto.agregarBinding(Logger.class, MongoDbLogger.class);
 		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
+		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		
 		PeliculasController unController = contexto.creameUnObjeto(PeliculasController.class);
 		
@@ -96,15 +100,4 @@ public class TestXXX {
 		assertThat(unController.getPeliculasHome().getLogger(), instanceOf(MongoDbLogger.class));
 	}
 	
-//	@Test
-//	public void test5() {
-//		this.contexto.agregarBinding(Perro.class, Bulldog.class);
-//		this.contexto.agregarBinding(CorreaDePerro.class, CorreaMetalica.class);
-//		
-//		CorreaDePerro correa = this.contexto.creameUnObjeto(CorreaDePerro.class);
-//		
-//		assertThat(correa, instanceOf(CorreaMetalica.class));
-//		assertThat(correa.getPerro(), instanceOf(Bulldog.class));
-//	}
-
 }
