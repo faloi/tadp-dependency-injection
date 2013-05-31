@@ -7,14 +7,15 @@ import java.util.List;
 
 public class InyeccionPorAccessors extends EstrategiaInyeccion {
 	
-	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
+	@Override
+	public <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
 			//(tiene que tener un constructor vacío)
 			Object elObjeto = this.getContexto()
 				.obtenerTipoPostaPara(claseAInstanciar)
 				.newInstance();
 			
-			this.inyectarAccessors(elObjeto);
+			this.inyectarAccessors(elObjeto, solicitante);
 			
 			return (T) elObjeto;
 		} catch (InstantiationException e) {
@@ -24,7 +25,7 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 		}
 	}
 	
-	private void inyectarAccessors(Object objeto) {
+	private void inyectarAccessors(Object objeto, Class<?> solicitante) {
 		Class<?> clase = objeto.getClass();
 		
 		Method[] metodos = clase.getMethods();
@@ -39,7 +40,7 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 		for(Method setter : settersAInyectar) {
 			try {
 				Class<?> tipo = setter.getParameterTypes()[0];
-				setter.invoke(objeto, this.obtenerObjeto(tipo));
+				setter.invoke(objeto, this.getContexto().obtenerObjeto(tipo, solicitante));
 			} catch (SecurityException e) {
 				throw new RuntimeException();
 			} catch (IllegalArgumentException e) {
@@ -51,4 +52,5 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 			}
 		}
 	}
+
 }

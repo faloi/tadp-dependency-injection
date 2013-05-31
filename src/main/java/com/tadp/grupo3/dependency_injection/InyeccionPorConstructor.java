@@ -1,80 +1,16 @@
 package com.tadp.grupo3.dependency_injection;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
-import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
 
 public class InyeccionPorConstructor extends EstrategiaInyeccion {
 
-	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
-		return this.obtenerObjeto(claseAInstanciar, claseAInstanciar);
-	}
-	
-	private <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
-		try {
-			return this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
-		} catch (Exception e) {
-			try {
-				return this.obtenerObjetoDesdeBindingDeInstancia(solicitante, claseAInstanciar);
-			} catch (Exception e2) {
-				return this.obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
-			}
-		}
-	}
-	
-	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<TipoInstancia> _) {
-		List<BindingEspecifico> bindings = filter(having(on(BindingEspecifico.class).esValidoPara(solicitante, _)), getContexto().getBindingsEspecificos());
-		
-		if (bindings.isEmpty())
-			throw new NoExisteBindingException();
-		
-		if (bindings.size() > 1)
-			throw new MasDeUnBindingException();
-		
-		Object[] parametrosDelConstructor = bindings.get(0).getParametrosDelConstructor();
-		
-		List<Class<?>> tipoDeParametros = new ArrayList<Class<?>>();
-		for (Object parametro : parametrosDelConstructor) {
-			tipoDeParametros.add(parametro.getClass());
-		}
-		
-		Constructor<?>[] constructores = solicitante.getConstructors();
-		for (Constructor<?> constructor : constructores) {
-			if (Arrays.equals(constructor.getParameterTypes(), tipoDeParametros.toArray()))
-				try {
-					return (TipoInstancia) constructor.newInstance(parametrosDelConstructor);
-				} catch (Exception e) {
-					throw new RuntimeException();
-				}
-		}
-		
-		throw new RuntimeException();
-	}
-	
-	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingDeInstancia(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
-		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), getContexto().getBindingsDeInstancia());
-		
-		if (bindings.isEmpty())
-			throw new NoExisteBindingException();
-		
-		if (bindings.size() > 1)
-			throw new MasDeUnBindingException();
-		
-		return (TipoInstancia) bindings.get(0).getInstancia();
-	}
-
-	private <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
+	public <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
 		Class<?> clasePosta = getContexto().obtenerTipoPostaPara(claseAInstanciar);
 		
 		Constructor<?>[] constructores = clasePosta.getConstructors();
@@ -111,7 +47,7 @@ public class InyeccionPorConstructor extends EstrategiaInyeccion {
 	private Object instanciarObjetoUsando(Constructor<?> constructor, Class<?> solicitante) {
 		List<Object> argumentos = new ArrayList<Object>();
 		for (Class<?> tipoDeParametro : constructor.getParameterTypes()) {
-			argumentos.add(this.obtenerObjeto(tipoDeParametro, solicitante));
+			argumentos.add(this.getContexto().obtenerObjeto(tipoDeParametro, solicitante));
 		}
 		
 		try {
