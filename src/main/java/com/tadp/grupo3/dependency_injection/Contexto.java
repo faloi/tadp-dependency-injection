@@ -14,12 +14,12 @@ import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 public class Contexto {
 	// Properties
 	private Collection<BindingDeClase> bindings;
-	public Collection<BindingDeClase> getBindingsDeClase() {
+	private Collection<BindingDeClase> getBindingsDeClase() {
 		return bindings;
 	}
 
 	private Collection<Binding> bindingsEspecificos;
-	public Collection<Binding> getBindingsEspecificos() {
+	private Collection<Binding> getBindingsEspecificos() {
 		return bindingsEspecificos;
 	}
 	
@@ -89,4 +89,17 @@ public class Contexto {
 		return bindingsUtiles.get(0).obtenerObjeto(solicitante, tipoInstancia);		
 	}
 
+	public Boolean sePuedeInstanciar(Class<?> unTipo, Class<?> solicitante) {
+		for(Binding unBinding : this.getBindingsEspecificos())
+			if (unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		
+		//anySatisfy
+		for(BindingDeClase unBinding : this.getBindingsDeClase()){
+			if(unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		}
+		
+		return false;
+	}
 }
