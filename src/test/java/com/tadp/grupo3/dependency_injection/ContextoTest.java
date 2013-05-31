@@ -119,4 +119,19 @@ public class ContextoTest {
 		assertTrue(unController.getPeliculasHome() instanceof MdxPeliculasHome);
 		assertTrue(unController.getPeliculasHome().getLogger() instanceof MongoDbLogger);
 	}
+	
+	@Test
+	public void test1() {
+		contexto.agregarBindingEspecifico(MailSender.class, "usuario", "rodri042@gmail.com");
+		contexto.agregarBindingEspecifico(MailSender.class, "password", "notedoymiclave");
+		contexto.agregarBindingEspecifico(MailSender.class, "smtp", "smtp.gmail.com");
+		contexto.agregarBindingEspecifico(MailSender.class, "puerto", 3389);
+		contexto.agregarBinding(MailSender.class, MailSender.class);
+		
+		MailSender unMailSender = contexto.obtenerObjeto(MailSender.class);
+		assertEquals("rodri042@gmail.com", unMailSender.getUsuario());
+		assertEquals("notedoymiclave", unMailSender.getPassword());
+		assertEquals("smtp.gmail.com", unMailSender.getSmtp());
+		assertEquals(3389, unMailSender.getPuerto());
+	}
 }
