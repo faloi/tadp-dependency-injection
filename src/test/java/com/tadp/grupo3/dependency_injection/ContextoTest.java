@@ -3,6 +3,9 @@ package com.tadp.grupo3.dependency_injection;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +21,7 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void creameUnObjeto_crea_un_objeto_del_tipo_especificado_en_el_binding() {
+	public void obtenerObjeto_crea_un_objeto_del_tipo_especificado_en_el_binding() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
 		PeliculasHome home = contexto.obtenerObjeto(PeliculasHome.class);
 		
@@ -26,7 +29,7 @@ public class ContextoTest {
 	}
 
 	@Test
-	public void creameUnObjeto_crea_objetos_de_los_tipos_especificados_en_los_bindings() {
+	public void obtenerObjeto_crea_objetos_de_los_tipos_especificados_en_los_bindings() {
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		this.contexto.agregarBinding(Perro.class, Bulldog.class);
 
@@ -38,12 +41,12 @@ public class ContextoTest {
 	}
 	
 	@Test(expected=NoExisteBindingException.class)
-	public void creameUnObjeto_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
+	public void obtenerObjeto_explota_si_no_hay_bindings_para_el_tipo_solicitado() {
 		this.contexto.obtenerObjeto(PersonaHome.class);
 	}
 	
 	@Test(expected=MasDeUnBindingException.class)
-	public void creameUnObjeto_explota_si_hay_mas_de_un_binding_para_el_tipo_solicitado() {
+	public void obtenerObjeto_explota_si_hay_mas_de_un_binding_para_el_tipo_solicitado() {
 		this.contexto.agregarBinding(PeliculasHome.class, EnMemoriaPeliculasHome.class);
 		this.contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		
@@ -51,13 +54,13 @@ public class ContextoTest {
 	}
 	
 	@Test(expected = NoHayConstructorValidoException.class)
-	public void creameUnObjeto_explota_si_no_hay_ningun_constructor_valido(){
+	public void obtenerObjeto_explota_si_no_hay_ningun_constructor_valido(){
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		contexto.obtenerObjeto(PeliculasController.class);
 	}
 
 	@Test(expected = MasDeUnConstructorValidoException.class)
-	public void creameUnObjeto_explota_si_se_podria_instanciar_usando_mas_de_un_constructor(){
+	public void obtenerObjeto_explota_si_se_podria_instanciar_usando_mas_de_un_constructor(){
 		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
 		contexto.agregarBinding(UsuariosHome.class, MongoDbUsuariosHome.class);
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
@@ -66,7 +69,7 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void creameUnObjeto_crea_recursivamente_las_dependencias_del_tipo_dado() {
+	public void obtenerObjeto_crea_recursivamente_las_dependencias_del_tipo_dado() {
 		contexto.agregarBinding(Logger.class, MongoDbLogger.class);
 		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
@@ -78,7 +81,7 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void creameUnObjeto_usa_los_bindings_de_instancia_para_resolver_dependencias() {
+	public void obtenerObjeto_usa_los_bindings_de_instancia_para_resolver_dependencias() {
 		MongoDbLogger mongoDbLogger = new MongoDbLogger();
 		contexto.agregarBindingDeInstancia(MongoDbPeliculasHome.class, mongoDbLogger);
 		contexto.agregarBinding(MongoDbPeliculasHome.class, MongoDbPeliculasHome.class);
@@ -89,10 +92,13 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void test1() {
+	public void obtenerObjeto_puede_crear_colecciones_correctamente() {
+		List<PeliculasHome> homesPeliculas = new ArrayList<PeliculasHome>();
+		homesPeliculas.add(new SqlPeliculasHome());
+		homesPeliculas.add(new MongoDbPeliculasHome(new MongoDbLogger()));
+		
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
-		contexto.agregarBinding(PeliculasHome.class, SqlPeliculasHome.class);
-		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
+		contexto.agregarBindingDeInstancia(PeliculasController.class, homesPeliculas);
 		
 		PeliculasController unController = contexto.obtenerObjeto(PeliculasController.class);
 		
