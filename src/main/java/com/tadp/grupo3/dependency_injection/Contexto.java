@@ -4,16 +4,12 @@ import static ch.lambdaj.Lambda.filter;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
-import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
-import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
 
 public class Contexto {
 	// Properties
@@ -43,12 +39,10 @@ public class Contexto {
 				this.estrategia = new InyeccionPorConstructor(this);
 				break;
 			case PorAccessors:
-				
+				this.estrategia = new InyeccionPorAccessors(this);
 				break;
 		}
 	}
-	
-	
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
 		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
@@ -92,5 +86,4 @@ public class Contexto {
 		
 		return false;
 	}
-
 }

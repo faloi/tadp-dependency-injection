@@ -1,8 +1,10 @@
 package com.tadp.grupo3.dependency_injection.fixture;
 
+import com.tadp.grupo3.dependency_injection.Inyectar;
+
 public class CineController {
-	public PeliculasController peliculasController;
-	public PeliculasHome homePeliculas;
+	private PeliculasController peliculasController;
+	private PeliculasHome homePeliculas;
 	
 	public CineController() { }
 	
@@ -10,14 +12,16 @@ public class CineController {
 		return peliculasController;
 	}
 
-	public void setPeliculasController(PeliculasController peliculasController) {
-		this.peliculasController = peliculasController;
-	}
-
 	public PeliculasHome getHomePeliculas() {
 		return homePeliculas;
 	}
-
+	
+	@Inyectar
+	public void setPeliculasController(PeliculasController peliculasController) {
+		this.peliculasController = peliculasController;
+	}
+	
+	@Inyectar
 	public void setHomePeliculas(PeliculasHome homePeliculas) {
 		this.homePeliculas = homePeliculas;
 	}
