@@ -107,17 +107,16 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void test1() { //hay que hacer que pase (?)
+	public void obtenerObjeto_por_accessors_instancia_a_varios_niveles() {
 		contexto.establecerEstrategia(TipoDeInyeccion.PorAccessors);
 		
 		contexto.agregarBinding(Logger.class, MongoDbLogger.class);
-		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
-		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
+		contexto.agregarBinding(PeliculasHome.class, MdxPeliculasHome.class);
 		contexto.agregarBinding(CineController.class, CineController.class);
 		 
 		CineController unController = contexto.obtenerObjeto(CineController.class);
 		
-		assertNotNull(unController.getPeliculasController());
-		assertTrue(unController.getHomePeliculas() instanceof MongoDbPeliculasHome);
+		assertTrue(unController.getPeliculasHome() instanceof MdxPeliculasHome);
+		assertTrue(unController.getPeliculasHome().getLogger() instanceof MongoDbLogger);
 	}
 }

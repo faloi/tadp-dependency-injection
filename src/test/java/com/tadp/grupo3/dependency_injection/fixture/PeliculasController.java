@@ -11,11 +11,11 @@ public class PeliculasController {
 	public String cadena;
 	
 	public PeliculasController(PeliculasHome unHome){
-	      this.setHomePeliculas(unHome);
+		this.setHomePeliculas(unHome);
 	}
 	
 	public PeliculasController(List<PeliculasHome> unosHomes){
-	      this.setHomesPeliculas(unosHomes);
+	 	this.setHomesPeliculas(unosHomes);
 	}
 
 	public PeliculasController(UsuariosHome unHomeDeUsuarios) {
