@@ -106,14 +106,18 @@ public class ContextoTest {
 		assertTrue(unController.getHomesPeliculas().get(1) instanceof MongoDbPeliculasHome);
 	}
 	
-	/*@Test (Para probar por accessors)
-	public void test1() {
+	@Test
+	public void test1() { //hay que hacer que pase (?)
+		contexto.establecerEstrategia(TipoDeInyeccion.PorAccessors);
+		
 		contexto.agregarBinding(Logger.class, MongoDbLogger.class);
 		contexto.agregarBinding(PeliculasHome.class, MongoDbPeliculasHome.class);
 		contexto.agregarBinding(PeliculasController.class, PeliculasController.class);
 		contexto.agregarBinding(CineController.class, CineController.class);
 		 
-		contexto.obtenerObjeto(CineController.class);
+		CineController unController = contexto.obtenerObjeto(CineController.class);
+		
+		assertNotNull(unController.getPeliculasController());
+		assertTrue(unController.getHomePeliculas() instanceof MongoDbPeliculasHome);
 	}
-	*/
 }

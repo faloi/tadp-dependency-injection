@@ -34,6 +34,10 @@ public class Contexto {
 	public Contexto(TipoDeInyeccion tipo) {
 		this.bindings = new ArrayList<Binding>();
 		this.bindingsDeInstancia = new ArrayList<BindingDeInstancia>();
+		this.establecerEstrategia(tipo);
+	}
+
+	public void establecerEstrategia(TipoDeInyeccion tipo) {
 		switch(tipo) {
 			case PorConstructor:
 				this.estrategia = new InyeccionPorConstructor(this);
@@ -43,6 +47,8 @@ public class Contexto {
 				break;
 		}
 	}
+	
+	
 	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
 		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
