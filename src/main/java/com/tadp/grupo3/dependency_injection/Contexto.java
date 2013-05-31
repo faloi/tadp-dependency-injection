@@ -29,22 +29,17 @@ public class Contexto {
 	
 	private EstrategiaInyeccion estrategia;
 	
-	public Contexto(TipoDeInyeccion tipo) {
+	public Contexto(EstrategiaInyeccion estrategiaDeInyeccion) {
 		this.bindings = new ArrayList<Binding>();
 		this.bindingsDeInstancia = new ArrayList<BindingDeInstancia>();
 		this.bindingsEspecificos = new ArrayList<BindingEspecifico>();
-		this.establecerEstrategia(tipo);
+		
+		this.setEstrategia(estrategiaDeInyeccion);
 	}
 
-	public void establecerEstrategia(TipoDeInyeccion tipo) {
-		switch(tipo) {
-			case PorConstructor:
-				this.estrategia = new InyeccionPorConstructor(this);
-				break;
-			case PorAccessors:
-				this.estrategia = new InyeccionPorAccessors(this);
-				break;
-		}
+	public void setEstrategia(EstrategiaInyeccion estrategiaDeInyeccion) {
+		estrategiaDeInyeccion.setContexto(this);
+		this.estrategia = estrategiaDeInyeccion;
 	}
 	
 	private void agregarBinding(Binding binding) {

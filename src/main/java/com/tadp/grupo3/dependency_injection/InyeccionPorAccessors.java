@@ -1,26 +1,16 @@
 package com.tadp.grupo3.dependency_injection;
 
-import static ch.lambdaj.Lambda.filter;
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InyeccionPorAccessors implements EstrategiaInyeccion {
-	private Contexto contexto;
-	
-	public InyeccionPorAccessors(Contexto contexto) {
-		this.contexto = contexto;
-	}
+public class InyeccionPorAccessors extends EstrategiaInyeccion {
 	
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
 		try {
 			//(tiene que tener un constructor vacío)
-			Object elObjeto = contexto
+			Object elObjeto = this.getContexto()
 				.obtenerTipoPostaPara(claseAInstanciar)
 				.newInstance();
 			

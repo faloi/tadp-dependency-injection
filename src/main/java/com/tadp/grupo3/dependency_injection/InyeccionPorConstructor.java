@@ -15,13 +15,8 @@ import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoE
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
 
-public class InyeccionPorConstructor implements EstrategiaInyeccion {
-	private Contexto contexto;
-	
-	public InyeccionPorConstructor(Contexto contexto) {
-		this.contexto = contexto;
-	}
-	
+public class InyeccionPorConstructor extends EstrategiaInyeccion {
+
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
 		return this.obtenerObjeto(claseAInstanciar, claseAInstanciar);
 	}
@@ -39,7 +34,7 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	}
 	
 	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<TipoInstancia> _) {
-		List<BindingEspecifico> bindings = filter(having(on(BindingEspecifico.class).esValidoPara(solicitante, _)), contexto.getBindingsEspecificos());
+		List<BindingEspecifico> bindings = filter(having(on(BindingEspecifico.class).esValidoPara(solicitante, _)), getContexto().getBindingsEspecificos());
 		
 		if (bindings.isEmpty())
 			throw new NoExisteBindingException();
@@ -68,7 +63,7 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	}
 	
 	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingDeInstancia(Class<?> scope, Class<TipoInstancia> tipoInstancia) {
-		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), contexto.getBindingsDeInstancia());
+		List<BindingDeInstancia> bindings = filter(having(on(BindingDeInstancia.class).esValidoPara(scope, tipoInstancia)), getContexto().getBindingsDeInstancia());
 		
 		if (bindings.isEmpty())
 			throw new NoExisteBindingException();
@@ -80,7 +75,7 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	}
 
 	private <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
-		Class<?> clasePosta = contexto.obtenerTipoPostaPara(claseAInstanciar);
+		Class<?> clasePosta = getContexto().obtenerTipoPostaPara(claseAInstanciar);
 		
 		Constructor<?>[] constructores = clasePosta.getConstructors();
 		
@@ -143,17 +138,17 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	}
 	
 	public Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
-		for(BindingEspecifico unBinding : this.contexto.getBindingsEspecificos())
+		for(BindingEspecifico unBinding : this.getContexto().getBindingsEspecificos())
 			if (unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		
 		//anySatisfy
-		for(Binding unBinding : this.contexto.getBindings()){
+		for(Binding unBinding : this.getContexto().getBindings()){
 			if(unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		}
 
-		for(BindingDeInstancia unBinding : this.contexto.getBindingsDeInstancia()){
+		for(BindingDeInstancia unBinding : this.getContexto().getBindingsDeInstancia()){
 			if(unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		}		

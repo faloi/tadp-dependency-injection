@@ -36,7 +36,7 @@ public class ContextoTest {
 
 	@Before
 	public void setUp() {
-		this.contexto = new Contexto(TipoDeInyeccion.PorConstructor);
+		this.contexto = new Contexto(new InyeccionPorConstructor());
 	}
 	
 	@Test
@@ -127,7 +127,7 @@ public class ContextoTest {
 	
 	@Test
 	public void obtenerObjeto_por_accessors_instancia_a_varios_niveles() {
-		contexto.establecerEstrategia(TipoDeInyeccion.PorAccessors);
+		contexto.setEstrategia(new InyeccionPorAccessors());
 		
 		contexto.agregarBinding(Logger.class, MongoDbLogger.class);
 		contexto.agregarBinding(PeliculasHome.class, MdxPeliculasHome.class);
