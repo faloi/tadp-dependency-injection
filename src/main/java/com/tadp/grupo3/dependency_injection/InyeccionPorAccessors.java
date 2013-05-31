@@ -32,9 +32,9 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 		
 		//filter
 		List<Method> settersAInyectar = new ArrayList<Method>();
-		for(Method metodo : metodos) {
-			if (metodo.getAnnotation(Inyectar.class) != null && metodo.getName().startsWith("set"))
-				settersAInyectar.add(metodo);
+		for(Method unMetodo : metodos) {
+			if (this.puedoInyectar(unMetodo))
+				settersAInyectar.add(unMetodo);
 		}
 		
 		for(Method setter : settersAInyectar) {
@@ -51,6 +51,14 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 				throw new RuntimeException();
 			}
 		}
+	}
+
+	private boolean puedoInyectar(Method unMetodo) {
+		return unMetodo.isAnnotationPresent(Inyectar.class) && this.esUnSetter(unMetodo);
+	}
+
+	private boolean esUnSetter(Method unMetodo) {
+		return unMetodo.getName().startsWith("set");
 	}
 
 }
