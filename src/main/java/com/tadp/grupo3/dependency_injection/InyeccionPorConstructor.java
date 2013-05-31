@@ -74,20 +74,15 @@ public class InyeccionPorConstructor extends EstrategiaInyeccion {
 	}
 	
 	public Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
-		for(BindingEspecifico unBinding : this.getContexto().getBindingsEspecificos())
+		for(Binding unBinding : this.getContexto().getBindingsEspecificos())
 			if (unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		
 		//anySatisfy
-		for(Binding unBinding : this.getContexto().getBindings()){
+		for(BindingDeClase unBinding : this.getContexto().getBindingsDeClase()){
 			if(unBinding.esValidoPara(solicitante, unTipo))
 				return true;
 		}
-
-		for(BindingDeInstancia unBinding : this.getContexto().getBindingsDeInstancia()){
-			if(unBinding.esValidoPara(solicitante, unTipo))
-				return true;
-		}		
 		
 		return false;
 	}

@@ -1,6 +1,6 @@
 package com.tadp.grupo3.dependency_injection;
 
-public class BindingDeInstancia {
+public class BindingDeInstancia implements Binding {
 	
 	private Class<?> scope;
 	private Class<?> tipo;
@@ -28,7 +28,7 @@ public class BindingDeInstancia {
 		this.scope = scope;
 	}
 
-	public Boolean esValidoPara(Class<?> otroScope, Class<?> tipoInstancia) {
+	public boolean esValidoPara(Class<?> otroScope, Class<?> tipoInstancia) {
 		return this.getScope().equals(otroScope) && tipoInstancia.isAssignableFrom(this.getTipo());
 	}
 
@@ -38,6 +38,10 @@ public class BindingDeInstancia {
 
 	private void setTipo(Class<?> tipo) {
 		this.tipo = tipo;
+	}
+
+	public <TipoInstancia> TipoInstancia obtenerObjeto(Class<?> _, Class<TipoInstancia> __) {
+		return (TipoInstancia) this.getInstancia();
 	}
 
 }
