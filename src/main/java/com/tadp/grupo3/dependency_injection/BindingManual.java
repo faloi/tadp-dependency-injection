@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
+
 public class BindingManual implements Binding {
 
 	private Class<?> tipoBase;
@@ -55,6 +57,6 @@ public class BindingManual implements Binding {
 				}
 		}
 		
-		throw new RuntimeException();
+		throw new NoHayConstructorValidoException();
 	}
 }

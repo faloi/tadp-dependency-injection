@@ -183,4 +183,28 @@ public class ContextoTest {
 		assertEquals("smtp.gmail.com", unMailSender.getSmtp());
 		assertEquals((Integer)3389, unMailSender.getPuerto());
 	}
+	
+	@Test(expected=MasDeUnBindingException.class)
+	public void test5() {
+		contexto.agregarBindingDeInstancia(PeliculasController.class, new ArrayList<PeliculasHome>());
+		contexto.agregarBindingDeInstancia(PeliculasController.class, new ArrayList<PeliculasHome>());
+		contexto.agregarBindingDeClase(PeliculasController.class, PeliculasController.class);
+		
+		contexto.obtenerObjeto(PeliculasController.class);
+	}
+
+	@Test(expected=MasDeUnBindingException.class)
+	public void test2() {
+		contexto.agregarBindingManual(PeliculasController.class, new ArrayList<PeliculasHome>());
+		contexto.agregarBindingManual(PeliculasController.class, new ArrayList<PeliculasHome>());
+		
+		contexto.obtenerObjeto(PeliculasController.class);
+	}	
+	
+	@Test(expected=NoHayConstructorValidoException.class)
+	public void test6() {
+		contexto.agregarBindingManual(PeliculasController.class, "falopa");
+		
+		contexto.obtenerObjeto(PeliculasController.class);
+	}
 }
