@@ -1,6 +1,6 @@
 package com.tadp.grupo3.dependency_injection;
 
-import static ch.lambdaj.Lambda.filter;
+import static ch.lambdaj.Lambda.*;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 
@@ -8,7 +8,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.tadp.grupo3.dependency_injection.converters.ObjectToClassConverter;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
@@ -27,10 +29,38 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	
 	private <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
+			return this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
+		}
+		try {
 			return this.obtenerObjetoDesdeBindingDeInstancia(solicitante, claseAInstanciar);
 		} catch (Exception e) {
 			return this.obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
 		}
+	}
+	
+	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<TipoInstancia> _) {
+		List<BindingEspecifico> bindings = filter(having(on(BindingEspecifico.class).esValidoPara(solicitante, _)), contexto.getBindingsEspecificos());
+		
+		if (bindings.isEmpty())
+			throw new NoExisteBindingException();
+		
+		if (bindings.size() > 1)
+			throw new MasDeUnBindingException();
+		
+		Object[] parametrosDelConstructor = bindings.get(0).getParametrosDelConstructor();
+		
+		List<?> parameterTypes = collect(parametrosDelConstructor, on(Object.class).getClass());
+		
+		
+		for (Binding binding : bindingAUsar.getTipoBase()) {
+			
+		}
+		
+		Constructor<?>[] constructores = solicitante.getConstructors();
+		for (Constructor constructor : constructores) {
+			if (constructor.getParameterTypes())
+		}
+		
 	}
 	
 	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingDeInstancia(Class<?> scope, Class<TipoInstancia> tipoInstancia) {

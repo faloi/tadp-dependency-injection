@@ -22,6 +22,11 @@ public class Contexto {
 		return bindingsDeInstancia;
 	}
 	
+	private Collection<BindingEspecifico> bindingsEspecificos;
+	public Collection<BindingEspecifico> getBindingsEspecificos() {
+		return bindingsEspecificos;
+	}
+	
 	private EstrategiaInyeccion estrategia;
 	private EstrategiaInyeccion getEstrategia() {
 		return estrategia;
@@ -44,8 +49,20 @@ public class Contexto {
 		}
 	}
 	
+	private void agregarBinding(Binding binding) {
+		this.getBindings().add(binding);
+	}
+	
 	public <TipoBase> void agregarBinding(Class<TipoBase> tipoBase, Class<?> tipoConcreto) {
 		this.agregarBinding(new Binding(tipoBase, tipoConcreto));
+	}
+	
+	public void agregarBindingDeInstancia(Class<?> scope, Object instancia) {
+		this.getBindingsDeInstancia().add(new BindingDeInstancia(scope, instancia));
+	}
+	
+	public void configurarBindingEspecifico(Class<?> unTipo, Object... parametrosDelConstructor) {
+		this.getBindingsEspecificos().add(new BindingEspecifico(unTipo, parametrosDelConstructor));
 	}
 
 	Class<?> obtenerTipoPostaPara(Class<?> tipoBase) {
@@ -59,20 +76,16 @@ public class Contexto {
 		
 		return bindings.get(0).getTipoConcreto();
 	}
-	
-	public void agregarBindingDeInstancia(Class<?> scope, Object instancia) {
-		this.getBindingsDeInstancia().add(new BindingDeInstancia(scope, instancia));
-	}
-	
-	private void agregarBinding(Binding binding) {
-		this.getBindings().add(binding);
-	}
 
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
 		return estrategia.obtenerObjeto(claseAInstanciar);
 	}
 
 	public Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
+		for(BindingEspecifico unBinding : this.getBindingsEspecificos())
+			if (unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		
 		//anySatisfy
 		for(Binding unBinding : this.getBindings()){
 			if(unBinding.esValidoPara(solicitante, unTipo))

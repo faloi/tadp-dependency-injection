@@ -122,10 +122,7 @@ public class ContextoTest {
 	
 	@Test
 	public void test1() {
-		contexto.agregarBindingEspecifico(MailSender.class, "usuario", "rodri042@gmail.com");
-		contexto.agregarBindingEspecifico(MailSender.class, "password", "notedoymiclave");
-		contexto.agregarBindingEspecifico(MailSender.class, "smtp", "smtp.gmail.com");
-		contexto.agregarBindingEspecifico(MailSender.class, "puerto", 3389);
+		contexto.configurarBindingEspecifico(MailSender.class, "rodri042@gmail.com", "notedoymiclave", "smtp.gmail.com", 3389);
 		contexto.agregarBinding(MailSender.class, MailSender.class);
 		
 		MailSender unMailSender = contexto.obtenerObjeto(MailSender.class);
