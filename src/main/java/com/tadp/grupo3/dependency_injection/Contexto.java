@@ -28,13 +28,11 @@ public class Contexto {
 	}
 	
 	private EstrategiaInyeccion estrategia;
-	private EstrategiaInyeccion getEstrategia() {
-		return estrategia;
-	}
 	
 	public Contexto(TipoDeInyeccion tipo) {
 		this.bindings = new ArrayList<Binding>();
 		this.bindingsDeInstancia = new ArrayList<BindingDeInstancia>();
+		this.bindingsEspecificos = new ArrayList<BindingEspecifico>();
 		this.establecerEstrategia(tipo);
 	}
 

@@ -1,16 +1,15 @@
 package com.tadp.grupo3.dependency_injection;
 
-import static ch.lambdaj.Lambda.*;
+import static ch.lambdaj.Lambda.filter;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import com.tadp.grupo3.dependency_injection.converters.ObjectToClassConverter;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
@@ -30,11 +29,12 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	private <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
 			return this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
-		}
-		try {
-			return this.obtenerObjetoDesdeBindingDeInstancia(solicitante, claseAInstanciar);
 		} catch (Exception e) {
-			return this.obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
+			try {
+				return this.obtenerObjetoDesdeBindingDeInstancia(solicitante, claseAInstanciar);
+			} catch (Exception e2) {
+				return this.obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
+			}
 		}
 	}
 	
@@ -49,18 +49,22 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 		
 		Object[] parametrosDelConstructor = bindings.get(0).getParametrosDelConstructor();
 		
-		List<?> parameterTypes = collect(parametrosDelConstructor, on(Object.class).getClass());
-		
-		
-		for (Binding binding : bindingAUsar.getTipoBase()) {
-			
+		List<Class<?>> tipoDeParametros = new ArrayList<Class<?>>();
+		for (Object parametro : parametrosDelConstructor) {
+			tipoDeParametros.add(parametro.getClass());
 		}
 		
 		Constructor<?>[] constructores = solicitante.getConstructors();
-		for (Constructor constructor : constructores) {
-			if (constructor.getParameterTypes())
+		for (Constructor<?> constructor : constructores) {
+			if (Arrays.equals(constructor.getParameterTypes(), tipoDeParametros.toArray()))
+				try {
+					return (TipoInstancia) constructor.newInstance(parametrosDelConstructor);
+				} catch (Exception e) {
+					throw new RuntimeException();
+				}
 		}
 		
+		throw new RuntimeException();
 	}
 	
 	private <TipoInstancia> TipoInstancia obtenerObjetoDesdeBindingDeInstancia(Class<?> scope, Class<TipoInstancia> tipoInstancia) {

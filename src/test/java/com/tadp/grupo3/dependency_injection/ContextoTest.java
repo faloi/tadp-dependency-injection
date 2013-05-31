@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -121,7 +122,7 @@ public class ContextoTest {
 	}
 	
 	@Test
-	public void test1() {
+	public void obtenerObjeto_usa_los_bindings_especificos() {
 		contexto.configurarBindingEspecifico(MailSender.class, "rodri042@gmail.com", "notedoymiclave", "smtp.gmail.com", 3389);
 		contexto.agregarBinding(MailSender.class, MailSender.class);
 		
@@ -129,6 +130,6 @@ public class ContextoTest {
 		assertEquals("rodri042@gmail.com", unMailSender.getUsuario());
 		assertEquals("notedoymiclave", unMailSender.getPassword());
 		assertEquals("smtp.gmail.com", unMailSender.getSmtp());
-		assertEquals(3389, unMailSender.getPuerto());
+		assertEquals((Integer)3389, unMailSender.getPuerto());
 	}
 }

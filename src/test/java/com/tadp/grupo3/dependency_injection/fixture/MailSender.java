@@ -4,9 +4,9 @@ public class MailSender {
 	String usuario;
 	String password;
 	String smtp;
-	int puerto;
+	Integer puerto;
 	
-	public MailSender(String usuario, String password, String smtp, int puerto) {
+	public MailSender(String usuario, String password, String smtp, Integer puerto) {
 		this.usuario = usuario;
 		this.password = password;
 		this.smtp = smtp;
@@ -25,7 +25,7 @@ public class MailSender {
 		return smtp;
 	}
 
-	public int getPuerto() {
+	public Integer getPuerto() {
 		return puerto;
 	}
 }
