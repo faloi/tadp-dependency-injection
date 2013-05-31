@@ -17,8 +17,11 @@ import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoTieneConstructorVacioException;
 import com.tadp.grupo3.dependency_injection.fixture.Bulldog;
 import com.tadp.grupo3.dependency_injection.fixture.CineController;
+import com.tadp.grupo3.dependency_injection.fixture.CorreaDePerro;
+import com.tadp.grupo3.dependency_injection.fixture.CorreaMetalica;
 import com.tadp.grupo3.dependency_injection.fixture.EnMemoriaPeliculasHome;
 import com.tadp.grupo3.dependency_injection.fixture.GmailLogger;
 import com.tadp.grupo3.dependency_injection.fixture.Logger;
@@ -157,6 +160,16 @@ public class ContextoTest {
 
 		assertEquals(unMailSender, logger.getMailSender());
 		assertNull(logger.getUsuario());
+	}
+	
+	@Test(expected=NoTieneConstructorVacioException.class)
+	public void obtenerObjeto_por_accessors_explota_si_el_objeto_no_tiene_constructor_vacio() {
+		contexto.setEstrategia(new InyeccionPorAccessors());
+		
+		contexto.agregarBinding(Perro.class, Bulldog.class);
+		contexto.agregarBinding(CorreaDePerro.class, CorreaMetalica.class);
+		
+		contexto.obtenerObjeto(CorreaDePerro.class);
 	}
 	
 	@Test

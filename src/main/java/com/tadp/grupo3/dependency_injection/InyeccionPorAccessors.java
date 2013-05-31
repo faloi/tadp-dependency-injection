@@ -5,15 +5,19 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tadp.grupo3.dependency_injection.exceptions.NoTieneConstructorVacioException;
+
 public class InyeccionPorAccessors extends EstrategiaInyeccion {
 	
 	@Override
 	public <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
-			//(tiene que tener un constructor vacío)
-			Object elObjeto = this.getContexto()
-				.obtenerTipoPostaPara(claseAInstanciar)
-				.newInstance();
+			Class<?> tipoPosta = this.getContexto()
+				.obtenerTipoPostaPara(claseAInstanciar);
+			
+			this.validarQuePuedoInstanciar(tipoPosta);
+
+			Object elObjeto = tipoPosta.newInstance();
 			
 			this.inyectarAccessors(elObjeto, solicitante);
 			
@@ -22,6 +26,16 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 			throw new RuntimeException();
 		} catch (IllegalAccessException e) {
 			throw new RuntimeException();
+		}
+	}
+	
+	private void validarQuePuedoInstanciar(Class<?> unaClase) {
+		try {
+			unaClase.getConstructor();
+		} catch (NoSuchMethodException e) {
+			throw new NoTieneConstructorVacioException();
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
