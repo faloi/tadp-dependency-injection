@@ -185,16 +185,17 @@ public class ContextoTest {
 	}
 	
 	@Test(expected=MasDeUnBindingException.class)
-	public void test5() {
+	public void obtenerObjeto_explota_si_hay_mas_de_un_binding_de_instancia() {
 		contexto.agregarBindingDeInstancia(PeliculasController.class, new ArrayList<PeliculasHome>());
 		contexto.agregarBindingDeInstancia(PeliculasController.class, new ArrayList<PeliculasHome>());
+		
 		contexto.agregarBindingDeClase(PeliculasController.class, PeliculasController.class);
 		
 		contexto.obtenerObjeto(PeliculasController.class);
 	}
 
 	@Test(expected=MasDeUnBindingException.class)
-	public void test2() {
+	public void obtenerObjeto_explota_si_hay_mas_de_un_binding_manual() {
 		contexto.agregarBindingManual(PeliculasController.class, new ArrayList<PeliculasHome>());
 		contexto.agregarBindingManual(PeliculasController.class, new ArrayList<PeliculasHome>());
 		
@@ -202,7 +203,7 @@ public class ContextoTest {
 	}	
 	
 	@Test(expected=NoHayConstructorValidoException.class)
-	public void test6() {
+	public void obtenerObjeto_via_binding_manual_explota_si_no_puede_usar_ningun_constructor() {
 		contexto.agregarBindingManual(PeliculasController.class, "falopa");
 		
 		contexto.obtenerObjeto(PeliculasController.class);

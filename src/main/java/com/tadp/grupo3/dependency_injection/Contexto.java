@@ -68,10 +68,11 @@ public class Contexto {
 		return this.obtenerObjeto(claseAInstanciar, claseAInstanciar);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
 			return (T) this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
-		} catch (Exception e2) {
+		} catch (NoExisteBindingException e) {
 			Class<?> tipoPosta = this.obtenerTipoPostaPara(claseAInstanciar);
 			return (T) this.getEstrategia().obtenerObjeto(tipoPosta, solicitante);	
 		}
