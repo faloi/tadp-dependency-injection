@@ -1,17 +1,35 @@
 package com.tadp.grupo3.dependency_injection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import com.tadp.grupo3.dependency_injection.exceptions.*;
-import com.tadp.grupo3.dependency_injection.fixture.*;
+import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnConstructorValidoException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoException;
+import com.tadp.grupo3.dependency_injection.fixture.Bulldog;
+import com.tadp.grupo3.dependency_injection.fixture.CineController;
+import com.tadp.grupo3.dependency_injection.fixture.EnMemoriaPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture.Logger;
+import com.tadp.grupo3.dependency_injection.fixture.MailSender;
+import com.tadp.grupo3.dependency_injection.fixture.MdxPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture.MongoDbLogger;
+import com.tadp.grupo3.dependency_injection.fixture.MongoDbPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture.MongoDbUsuariosHome;
+import com.tadp.grupo3.dependency_injection.fixture.PeliculasController;
+import com.tadp.grupo3.dependency_injection.fixture.PeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture.Perro;
+import com.tadp.grupo3.dependency_injection.fixture.PersonaHome;
+import com.tadp.grupo3.dependency_injection.fixture.SqlPeliculasHome;
+import com.tadp.grupo3.dependency_injection.fixture.UsuariosHome;
 public class ContextoTest {
 
 	private Contexto contexto;

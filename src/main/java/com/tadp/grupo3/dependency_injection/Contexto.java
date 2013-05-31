@@ -14,7 +14,7 @@ import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
 public class Contexto {
 	// Properties
 	private Collection<Binding> bindings;
-	private Collection<Binding> getBindings() {
+	public Collection<Binding> getBindings() {
 		return bindings;
 	}
 	private Collection<BindingDeInstancia> bindingsDeInstancia;
@@ -77,24 +77,5 @@ public class Contexto {
 
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
 		return estrategia.obtenerObjeto(claseAInstanciar);
-	}
-
-	public Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
-		for(BindingEspecifico unBinding : this.getBindingsEspecificos())
-			if (unBinding.esValidoPara(solicitante, unTipo))
-				return true;
-		
-		//anySatisfy
-		for(Binding unBinding : this.getBindings()){
-			if(unBinding.esValidoPara(solicitante, unTipo))
-				return true;
-		}
-
-		for(BindingDeInstancia unBinding : this.getBindingsDeInstancia()){
-			if(unBinding.esValidoPara(solicitante, unTipo))
-				return true;
-		}		
-		
-		return false;
 	}
 }

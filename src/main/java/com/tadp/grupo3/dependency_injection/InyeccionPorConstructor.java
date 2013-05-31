@@ -136,9 +136,28 @@ public class InyeccionPorConstructor implements EstrategiaInyeccion {
 	private Boolean puedoUsarEsteConstructor(Constructor<?> unConstructor, Class<?> solicitante) {
 		//allSatisfy
 		for (Class<?> tipoDeParametro : unConstructor.getParameterTypes())
-			if (!contexto.puedoInstanciarUn(tipoDeParametro, solicitante))
+			if (!this.puedoInstanciarUn(tipoDeParametro, solicitante))
 				return false;
 		
 		return true;
+	}
+	
+	public Boolean puedoInstanciarUn(Class<?> unTipo, Class<?> solicitante) {
+		for(BindingEspecifico unBinding : this.contexto.getBindingsEspecificos())
+			if (unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		
+		//anySatisfy
+		for(Binding unBinding : this.contexto.getBindings()){
+			if(unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		}
+
+		for(BindingDeInstancia unBinding : this.contexto.getBindingsDeInstancia()){
+			if(unBinding.esValidoPara(solicitante, unTipo))
+				return true;
+		}		
+		
+		return false;
 	}
 }
