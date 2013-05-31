@@ -40,7 +40,6 @@ public class Contexto {
 		this.setEstrategia(estrategiaDeInyeccion);
 	}
 
-	
 	public void agregarBindingDeClase(Class<?> tipoBase, Class<?> tipoConcreto) {
 		this.getBindingsDeClase().add(new BindingDeClase(tipoBase, tipoConcreto));
 	}
@@ -53,7 +52,7 @@ public class Contexto {
 		this.getBindingsEspecificos().add(new BindingManual(unTipo, parametrosDelConstructor));
 	}
 
-	Class<?> obtenerTipoPostaPara(Class<?> tipoBase) {
+	private Class<?> obtenerTipoPostaPara(Class<?> tipoBase) {
 		List<BindingDeClase> bindings = filter(having(on(BindingDeClase.class).esTipoBase(tipoBase)), this.getBindingsDeClase());
 		
 		if (bindings.isEmpty())
@@ -71,13 +70,14 @@ public class Contexto {
 	
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar, Class<?> solicitante) {
 		try {
-			return this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
+			return (T) this.obtenerObjetoDesdeBindingEspecifico(solicitante, claseAInstanciar);
 		} catch (Exception e2) {
-			return this.getEstrategia().obtenerObjetoDesdeBindingDeClase(claseAInstanciar, solicitante);	
+			Class<?> tipoPosta = this.obtenerTipoPostaPara(claseAInstanciar);
+			return (T) this.getEstrategia().obtenerObjeto(tipoPosta, solicitante);	
 		}
 	}
 	
-	private <T> T obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<T> tipoInstancia) {
+	private Object obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<?> tipoInstancia) {
 		List<Binding> bindingsUtiles = filter(having(on(Binding.class).esValidoPara(solicitante, tipoInstancia)), this.getBindingsEspecificos());
 		
 		if (bindingsUtiles.isEmpty())

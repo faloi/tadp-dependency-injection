@@ -10,14 +10,13 @@ import com.tadp.grupo3.dependency_injection.exceptions.NoHayConstructorValidoExc
 
 public class InyeccionPorConstructor extends EstrategiaInyeccion {
 
-	public <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
-		Class<?> clasePosta = getContexto().obtenerTipoPostaPara(claseAInstanciar);
+	public Object obtenerObjeto(Class<?> clasePosta, Class<?> solicitante) {
 		
 		Constructor<?>[] constructores = clasePosta.getConstructors();
 		
 		if (this.esDirectamenteInstanciable(clasePosta, constructores))
 			try {
-				return (T) clasePosta.newInstance();
+				return clasePosta.newInstance();
 			} catch (InstantiationException e) {
 				throw new RuntimeException();
 			} catch (IllegalAccessException e) {
@@ -36,7 +35,7 @@ public class InyeccionPorConstructor extends EstrategiaInyeccion {
 		if (constructoresValidos.size() > 1)
 			throw new MasDeUnConstructorValidoException();
 		
-		return (T) this.instanciarObjetoUsando(constructoresValidos.get(0), solicitante);
+		return this.instanciarObjetoUsando(constructoresValidos.get(0), solicitante);
 	}
 
 	private <T> boolean esDirectamenteInstanciable(Class<T> claseAInstanciar, Constructor<?>[] constructores) {

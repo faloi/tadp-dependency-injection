@@ -39,7 +39,7 @@ public class BindingManual implements Binding {
 		return this.getTipoBase().equals(solicitante);
 	}
 	
-	public <TipoInstancia> TipoInstancia obtenerObjeto(Class<?> solicitante, Class<TipoInstancia> _) {
+	public Object obtenerObjeto(Class<?> solicitante, Class<?> _) {
 		List<Class<?>> tipoDeParametros = new ArrayList<Class<?>>();
 		for (Object parametro : this.getParametrosDelConstructor()) {
 			tipoDeParametros.add(parametro.getClass());
@@ -49,7 +49,7 @@ public class BindingManual implements Binding {
 		for (Constructor<?> constructor : constructores) {
 			if (Arrays.equals(constructor.getParameterTypes(), tipoDeParametros.toArray()))
 				try {
-					return (TipoInstancia) constructor.newInstance(parametrosDelConstructor);
+					return constructor.newInstance(parametrosDelConstructor);
 				} catch (Exception e) {
 					throw new RuntimeException();
 				}

@@ -40,8 +40,8 @@ public class BindingDeInstancia implements Binding {
 		this.tipo = tipo;
 	}
 
-	public <TipoInstancia> TipoInstancia obtenerObjeto(Class<?> _, Class<TipoInstancia> __) {
-		return (TipoInstancia) this.getInstancia();
+	public Object obtenerObjeto(Class<?> _, Class<?> __) {
+		return this.getInstancia();
 	}
 
 }

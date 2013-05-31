@@ -9,5 +9,5 @@ public abstract class EstrategiaInyeccion {
 		this.contexto = contexto;
 	}
 
-	abstract <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante);
+	abstract Object obtenerObjeto(Class<?> claseAInstanciar, Class<?> solicitante);
 }

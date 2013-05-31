@@ -10,23 +10,9 @@ import com.tadp.grupo3.dependency_injection.exceptions.NoTieneConstructorVacioEx
 public class InyeccionPorAccessors extends EstrategiaInyeccion {
 	
 	@Override
-	public <T> T obtenerObjetoDesdeBindingDeClase(Class<T> claseAInstanciar, Class<?> solicitante) {
-		try {
-			Class<?> tipoPosta = this.getContexto()
-				.obtenerTipoPostaPara(claseAInstanciar);
-			
-			this.validarQuePuedoInstanciar(tipoPosta);
-
-			Object elObjeto = tipoPosta.newInstance();
-			
-			this.inyectarAccessors(elObjeto, solicitante);
-			
-			return (T) elObjeto;
-		} catch (InstantiationException e) {
-			throw new RuntimeException();
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException();
-		}
+	public Object obtenerObjeto(Class<?> tipoPosta, Class<?> solicitante) {
+		this.validarQuePuedoInstanciar(tipoPosta);
+		return this.crearEInyectar(tipoPosta, solicitante);
 	}
 	
 	private void validarQuePuedoInstanciar(Class<?> unaClase) {
@@ -39,31 +25,36 @@ public class InyeccionPorAccessors extends EstrategiaInyeccion {
 		}
 	}
 	
-	private void inyectarAccessors(Object objeto, Class<?> solicitante) {
-		Class<?> clase = objeto.getClass();
-		
-		Method[] metodos = clase.getMethods();
-		
-		//filter
-		List<Method> settersAInyectar = new ArrayList<Method>();
-		for(Method unMetodo : metodos) {
-			if (this.puedoInyectar(unMetodo))
-				settersAInyectar.add(unMetodo);
-		}
-		
-		for(Method setter : settersAInyectar) {
-			try {
+	private Object crearEInyectar(Class<?> tipoPosta, Class<?> solicitante) {
+		try {
+			Object objeto = tipoPosta.newInstance();
+			Class<?> clase = objeto.getClass();
+			
+			Method[] metodos = clase.getMethods();
+			
+			//filter
+			List<Method> settersAInyectar = new ArrayList<Method>();
+			for(Method unMetodo : metodos) {
+				if (this.puedoInyectar(unMetodo))
+					settersAInyectar.add(unMetodo);
+			}
+			
+			for(Method setter : settersAInyectar) {
 				Class<?> tipo = setter.getParameterTypes()[0];
 				setter.invoke(objeto, this.getContexto().obtenerObjeto(tipo, solicitante));
-			} catch (SecurityException e) {
-				throw new RuntimeException();
-			} catch (IllegalArgumentException e) {
-				throw new RuntimeException();
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException();
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException();
 			}
+			
+			return objeto;
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
