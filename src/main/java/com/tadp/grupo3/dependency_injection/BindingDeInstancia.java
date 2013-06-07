@@ -2,12 +2,12 @@ package com.tadp.grupo3.dependency_injection;
 
 public class BindingDeInstancia implements Binding {
 	
-	private Class<?> scope;
+	private String id;
 	private Class<?> tipo;
 	private Object instancia;
 
-	public BindingDeInstancia(Class<?> scope, Object instancia) {
-		this.setScope(scope);
+	public BindingDeInstancia(String id, Object instancia) {
+		this.setId(id);
 		this.setTipo(instancia.getClass());
 		this.setInstancia(instancia);
 	}
@@ -19,17 +19,13 @@ public class BindingDeInstancia implements Binding {
 	private void setInstancia(Object objetoPrimitivo) {
 		this.instancia = objetoPrimitivo;
 	}
+	
 
-	private Class<?> getScope() {
-		return scope;
-	}
-
-	private void setScope(Class<?> scope) {
-		this.scope = scope;
-	}
-
+	//TODO: Me parece que este metodo no tiene sentido ahora.
+	//   	Igualmente lo dejo porque hay que implementarlo por la herencia.
 	public boolean esValidoPara(Class<?> otroScope, Class<?> tipoInstancia) {
-		return this.getScope().equals(otroScope) && tipoInstancia.isAssignableFrom(this.getTipo());
+		return true;
+		//		return this.getScope().equals(otroScope) && tipoInstancia.isAssignableFrom(this.getTipo());
 	}
 
 	public Class<?> getTipo() {
@@ -42,6 +38,14 @@ public class BindingDeInstancia implements Binding {
 
 	public Object obtenerObjeto(Class<?> _, Class<?> __) {
 		return this.getInstancia();
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

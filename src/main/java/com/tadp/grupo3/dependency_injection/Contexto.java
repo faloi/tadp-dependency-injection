@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.tadp.grupo3.dependency_injection.exceptions.MasDeUnBindingException;
 import com.tadp.grupo3.dependency_injection.exceptions.NoExisteBindingException;
+import com.tadp.grupo3.dependency_injection.exceptions.YaEstaUsadoElIdException;
 
 public class Contexto {
 	// Properties
@@ -18,8 +19,8 @@ public class Contexto {
 		return bindings;
 	}
 
-	private Collection<Binding> bindingsEspecificos;
-	private Collection<Binding> getBindingsEspecificos() {
+	private Collection<BindingDeInstancia> bindingsEspecificos;
+	private Collection<BindingDeInstancia> getBindingsEspecificos() {
 		return bindingsEspecificos;
 	}
 	
@@ -35,7 +36,7 @@ public class Contexto {
 
 	public Contexto(EstrategiaInyeccion estrategiaDeInyeccion) {
 		this.bindings = new ArrayList<BindingDeClase>();
-		this.bindingsEspecificos = new ArrayList<Binding>();
+		this.bindingsEspecificos = new ArrayList<BindingDeInstancia>();
 		
 		this.setEstrategia(estrategiaDeInyeccion);
 	}
@@ -44,12 +45,17 @@ public class Contexto {
 		this.getBindingsDeClase().add(new BindingDeClase(tipoBase, tipoConcreto));
 	}
 	
-	public void agregarBindingDeInstancia(Class<?> scope, Object instancia) {
-		this.getBindingsEspecificos().add(new BindingDeInstancia(scope, instancia));
+	public void agregarBindingDeInstancia(String id, Object instancia) {
+		for(BindingDeInstancia binding: this.bindingsEspecificos){
+			if(binding.getId().equals(id))
+				throw new YaEstaUsadoElIdException();
+		}
+		this.bindingsEspecificos.add(new BindingDeInstancia(id, instancia));
 	}
 	
-	public void agregarBindingManual(Class<?> unTipo, Object... parametrosDelConstructor) {
-		this.getBindingsEspecificos().add(new BindingManual(unTipo, parametrosDelConstructor));
+	public void agregarBindingManual(Class<?> unTipo,String id, Object... parametrosDelConstructor) {
+		
+		this.agregarBindingDeInstancia(id, new BindingManual(unTipo, parametrosDelConstructor).obtenerObjeto(unTipo, null));
 	}
 
 	private Class<?> obtenerTipoPostaPara(Class<?> tipoBase) {
@@ -64,6 +70,14 @@ public class Contexto {
 		return bindings.get(0).getTipoConcreto();
 	}
 
+	public Object obtenerObjeto(String id){
+		for(BindingDeInstancia binding : this.bindingsEspecificos){
+			if(binding.getId().equals(id))
+				return binding.obtenerObjeto(null, null);
+		}
+		throw new NoExisteBindingException();
+	}
+	
 	public <T> T obtenerObjeto(Class<T> claseAInstanciar) {
 		return this.obtenerObjeto(claseAInstanciar, claseAInstanciar);
 	}
@@ -79,7 +93,7 @@ public class Contexto {
 	}
 	
 	private Object obtenerObjetoDesdeBindingEspecifico(Class<?> solicitante, Class<?> tipoInstancia) {
-		List<Binding> bindingsUtiles = filter(having(on(Binding.class).esValidoPara(solicitante, tipoInstancia)), this.getBindingsEspecificos());
+		List<BindingDeInstancia> bindingsUtiles = filter(having(on(Binding.class).esValidoPara(solicitante, tipoInstancia)), this.getBindingsEspecificos());
 		
 		if (bindingsUtiles.isEmpty())
 			throw new NoExisteBindingException();
