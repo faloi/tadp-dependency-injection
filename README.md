@@ -6,7 +6,7 @@ El proyecto está mavenizado (https://sites.google.com/site/programacionui/mater
 Versión GUI (mediante el plugin de eclipse)
 -------------------------------------------
 
-- Abren el Eclipse, van a **Help->Install new software...** y donde dice **Work with** pegan esta url http://download.eclipse.org/technology/m2e/releases y le dan Enter. Esperan un rato y en la listita les va a aparecer el plugin y lo descargan. NOTA: no estoy seguro de que el plugin baje también el maven, si ven que les da algún error loco bajensé el maven (en Linux *sudo apt-get install maven2*, en Windows debe haber algún instalador loco).
+- Abren el Eclipse, van a **Help->Install new software...** y donde dice **Work with** pegan esta url http://download.eclipse.org/technology/m2e/releases y le dan Enter. Esperan un rato y en la listita les va a aparecer el plugin y lo descargan. NOTA: no estoy seguro de que el plugin baje también el maven, si ven que les da algún error loco bajensé el maven (en Linux `sudo apt-get install maven2`, en Windows debe haber algún instalador loco).
 
 - Con el plugin instalado, van a **File->Import...->Existing Maven Projects** y eligen la carpeta tadp-dependency-injection (o como sea que la hayan llamado).
 
